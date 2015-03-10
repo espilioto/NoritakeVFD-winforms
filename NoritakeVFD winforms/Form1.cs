@@ -48,6 +48,8 @@ namespace NoritakeVFD_winforms
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
+            stuff.CurPos2Hex(textBox1.Text.Length);
+
             if (e.KeyChar == '\b')      //if backspace is pressed...
             {
                 stuff.Serial.WriteBackspace();
@@ -65,11 +67,13 @@ namespace NoritakeVFD_winforms
         }
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
         {
+            stuff.CurPos2Hex(textBox2.Text.Length);
+
             if (e.KeyChar == '\b')
             {
                 stuff.Serial.WriteBackspace();
             }
-            else if (textBox1.Text.Length == 20)
+            else if (textBox2.Text.Length == 20)
             {
                 stuff.Serial.uart.Write("");
             }
@@ -82,12 +86,27 @@ namespace NoritakeVFD_winforms
 
         private void textBox1_Click(object sender, EventArgs e)
         {
-            //TODO move display cursor on click
-            //stuff.Serial.CursorPosition(0x31, (textBox1.Text.Length+1));
+            stuff.CurPos2Hex(textBox1.Text.Length);
+            if (stuff.right == 0)
+            {
+                stuff.Serial.CurPos(0x31, stuff.left);
+            }
+            else
+            {
+                stuff.Serial.CurPos(0x31, stuff.left, stuff.right);
+            }
         }
         private void textBox2_Click(object sender, EventArgs e)
         {
-            //stuff.Serial.CursorPosition(0x32, textBox2.Text.Length);
+            stuff.CurPos2Hex(textBox2.Text.Length);
+            if (stuff.right == 0)
+            {
+                stuff.Serial.CurPos(0x32, stuff.left);
+            }
+            else
+            {
+                stuff.Serial.CurPos(0x32, stuff.left, stuff.right);
+            }
         }
 
         private void btnResetCursor1_Click(object sender, EventArgs e)

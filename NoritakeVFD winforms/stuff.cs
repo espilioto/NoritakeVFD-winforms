@@ -9,10 +9,48 @@ namespace NoritakeVFD_winforms
 {
     class stuff
     {
+        public static byte left = 0, right = 0;
+
+        //stores the cursor position in dec ascii format. example: 1 = 49 / 15 = 49, 53
+        public static void CurPos2Hex(int cursorPosition)
+        {
+            int left = 0, right = 0;
+
+            if (cursorPosition < 9)
+            {
+                left = (cursorPosition + 49);
+
+                stuff.left = (byte)left;
+                stuff.right = 0;
+            }
+            else
+            {
+                right = (cursorPosition % 10) + 49;
+
+                if (right > 57) //if the second digit is greater than 9... 
+                {
+                    left = 50;  //the cursor's column is 20
+                }
+                else
+                {
+                    left = 49; //else, it's between 10 and 19
+                }
+                
+                if (right == 58) //if right is supposed to be 0, make it actually 0 and not ':' (dec 58 in ascii)
+                {
+                    right = 48;
+                }
+
+
+                stuff.left = (byte)left;
+                stuff.right = (byte)right;
+            }
+        }
+
         public class Serial
         {
             public static bool connected = false;
-            public static SerialPort uart = new SerialPort(); //commands:     ping ;  off ;   rgb r,g,b;  out,bit,0/1;    sta,;   man ;/help ;    
+            public static SerialPort uart = new SerialPort();
             public static System.Collections.ArrayList portlist = new System.Collections.ArrayList();
 
             public static void GetPorts()
@@ -58,16 +96,28 @@ namespace NoritakeVFD_winforms
             public static void WriteBackspace()
             {
                 byte[] command = new byte[1] { 0x08 };
-                uart.Write(command, 0, 1);                
-                uart.Write(" ");
-                uart.Write(command, 0, 1);
 
+                if (left == 2 && right == 0)
+                {
+                    uart.Write(" ");                        
+                }
+                else
+                {
+                    uart.Write(command, 0, 1);
+                    uart.Write(" ");
+                    uart.Write(command, 0, 1);
+                }
             }
-            //public static void CursorPosition(byte line, int cursorPosition)
-            //{
-            //    byte[] command = new byte[6] { 0x1B, 0x5B, line, 0x3B, cursorPosition, 0x48 };
-            //    uart.Write(command, 0, 6);
-            //}
+            public static void CurPos(byte line, byte col)
+            {
+                byte[] command = new byte[6] { 0x1B, 0x5B, line, 0x3B, col, 0x48 }; //command: ESC[<line>;<column number>H
+                uart.Write(command, 0, 6);
+            }
+            public static void CurPos(byte line, byte colH, byte colL)
+            {
+                byte[] command = new byte[7] { 0x1B, 0x5B, line, 0x3B, colH, colL, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
+                uart.Write(command, 0, 7);
+            }
             public static void ClearScreen()
             {
                 byte[] command = new byte[4] { 0x1B, 0x5B, 0x32, 0x4A };
