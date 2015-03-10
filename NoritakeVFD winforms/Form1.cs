@@ -23,8 +23,8 @@ namespace NoritakeVFD_winforms
         {
             form1 = this;
 
-            stuff.Serial.GetPorts();
-            foreach (var port in stuff.Serial.portlist)
+            Stuff.Serial.GetPorts();
+            foreach (var port in Stuff.Serial.portlist)
             {
                 portBox.Items.Add(port);
             }
@@ -36,92 +36,97 @@ namespace NoritakeVFD_winforms
         {
             if (openport.Checked)
             {
-                stuff.Serial.uart.Parity = System.IO.Ports.Parity.Odd; //vfd controller specific
-                stuff.Serial.Connect();
+                Stuff.Serial.uart.Parity = System.IO.Ports.Parity.Odd; //vfd controller specific
+                Stuff.Serial.Connect();
 
-                stuff.Serial.DisplayClearScreen();
+                Stuff.Serial.DisplayClearScreen();
             }
             else
             {
-                stuff.Serial.Disconnect();
+                Stuff.Serial.Disconnect();
             }
 
         }
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            stuff.CurPos2Hex(textBox1.Text.Length);
+            Stuff.CurPos2Hex(textBox1.Text.Length);
 
             if (e.KeyChar == '\b')      //if backspace is pressed...
             {
-                stuff.Serial.DisplayWriteBackspace();
+                Stuff.Serial.DisplayBackspace();
             }
             //if you write more than 20 chars on the display, the cursor stays in the last place and updates the last char, 
             //even if it can't be written in the textBox.
             else if (textBox1.Text.Length == 20)
             {
-                stuff.Serial.uart.Write("");
+                Stuff.Serial.uart.Write("");
             }
             else
             {
-                stuff.Serial.uart.Write(e.KeyChar.ToString());
+                Stuff.Serial.uart.Write(e.KeyChar.ToString());
             }
         }
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
         {
-            stuff.CurPos2Hex(textBox2.Text.Length);
+            Stuff.CurPos2Hex(textBox2.Text.Length);
 
             if (e.KeyChar == '\b')
             {
-                stuff.Serial.DisplayWriteBackspace();
+                Stuff.Serial.DisplayBackspace();
             }
             else if (textBox2.Text.Length == 20)
             {
-                stuff.Serial.uart.Write("");
+                Stuff.Serial.uart.Write("");
             }
             else
             {
-                stuff.Serial.uart.Write(e.KeyChar.ToString());
+                Stuff.Serial.uart.Write(e.KeyChar.ToString());
             }
         }
 
 
         private void textBox1_Click(object sender, EventArgs e)
         {
-            stuff.CurPos2Hex(textBox1.Text.Length);
-            if (stuff.right == 0)
+            Stuff.CurPos2Hex(textBox1.Text.Length);
+            if (Stuff.right == 0)
             {
-                stuff.Serial.DisplayCurPos(0x31, stuff.left);
+                Stuff.Serial.DisplaySetCurPos(0x31, Stuff.left);
             }
             else
             {
-                stuff.Serial.Display(0x31, stuff.left, stuff.right);
+                Stuff.Serial.DisplaySetCurPos(0x31, Stuff.left, Stuff.right);
             }
         }
         private void textBox2_Click(object sender, EventArgs e)
         {
-            stuff.CurPos2Hex(textBox2.Text.Length);
-            if (stuff.right == 0)
+            Stuff.CurPos2Hex(textBox2.Text.Length);
+            if (Stuff.right == 0)
             {
-                stuff.Serial.DisplayCurPos(0x32, stuff.left);
+                Stuff.Serial.DisplaySetCurPos(0x32, Stuff.left);
             }
             else
             {
-                stuff.Serial.Display(0x32, stuff.left, stuff.right);
+                Stuff.Serial.DisplaySetCurPos(0x32, Stuff.left, Stuff.right);
             }
         }
 
         private void btnResetCursor1_Click(object sender, EventArgs e)
         {
-            stuff.Serial.DisplaySetCursorToLine1();
+            Stuff.Serial.DisplaySetCursorToLine1();
         }
         private void btnResetCursor2_Click(object sender, EventArgs e)
         {
-            stuff.Serial.DisplaySetCursorToLine2();
+            Stuff.Serial.DisplaySetCursorToLine2();
         }
         private void btnClearScreen_Click(object sender, EventArgs e)
         {
-            stuff.Serial.DisplayClearScreen();
+            Stuff.Serial.DisplayClearScreen();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //TODO charsets
         }
 
 

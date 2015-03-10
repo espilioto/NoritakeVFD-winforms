@@ -7,46 +7,47 @@ using System.Threading.Tasks;
 
 namespace NoritakeVFD_winforms
 {
-    class stuff
+    class Stuff
     {
         public static byte left = 0, right = 0;
         public static int cursorPosition = 0;
 
-        //stores the cursor position in dec ascii format. example: 1 = 49 / 15 = 49, 53
+
+        //converts the cursor position in dec ascii format, based on the textbox's length. 
+        //example: 1 = 49 / 15 = 49, 53
         public static void CurPos2Hex(int curPos)
         {
             int left = 0, right = 0;
 
-            if (curPos < 9)
+            if (curPos < 10)    //if the length is less than 9...
             {
-                left = (curPos + 49);
-
-                stuff.left = (byte)left;
-                stuff.right = 0;
+                left = curPos + 49; //...convert it to ascii 
+                if (left == 58)     //if the position is 9, the ascii equivalent isn't 0 but ':'
+                {
+                    left = 49;      //time to fix that 
+                    right = 48;
+                }
+            }
+            else if (curPos > 9 && curPos < 20)
+            {
+                left = 49;
+                right = (curPos % 10) + 49;
+                if (right == 58)
+                {
+                    left = 50;
+                    right = 48;
+                }
             }
             else
             {
-                right = (curPos % 10) + 49;
+                left = 50;
+                right = 48;
 
-                if (right > 57) //if the second digit is greater than 9... 
-                {
-                    left = 50;  //...the cursor is in column 20, so the left digit is 2
-                }
-                else
-                {
-                    left = 49; //else, it's between 10 and 19, so make the first digit 1
-                }
-
-                if (right == 58) //if right is supposed to be 0 (aka column 20), make it actually 0 and not ':' (dec 58 in ascii)
-                {
-                    right = 48;
-                }
-
-
-                stuff.left = (byte)left;
-                stuff.right = (byte)right;
-                cursorPosition = curPos++;
             }
+
+            Stuff.left = (byte)left;
+            Stuff.right = (byte)right;
+            cursorPosition = curPos++;
         }
 
         public class Serial
@@ -95,7 +96,7 @@ namespace NoritakeVFD_winforms
                 connected = false;
             }
 
-            public static void DisplayWriteBackspace()
+            public static void DisplayBackspace()
             {
                 byte[] command = new byte[1] { 0x08 };
 
@@ -110,12 +111,12 @@ namespace NoritakeVFD_winforms
                     uart.Write(command, 0, 1);
                 }
             }
-            public static void DisplayCurPos(byte line, byte col)
+            public static void DisplaySetCurPos(byte line, byte col)
             {
                 byte[] command = new byte[6] { 0x1B, 0x5B, line, 0x3B, col, 0x48 }; //command: ESC[<line>;<column number>H
                 uart.Write(command, 0, 6);
             }
-            public static void Display(byte line, byte colH, byte colL)
+            public static void DisplaySetCurPos(byte line, byte colH, byte colL)
             {
                 byte[] command = new byte[7] { 0x1B, 0x5B, line, 0x3B, colH, colL, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
                 uart.Write(command, 0, 7);

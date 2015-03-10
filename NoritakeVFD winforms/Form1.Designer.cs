@@ -36,6 +36,8 @@
             this.btnResetCursor1 = new System.Windows.Forms.Button();
             this.btnClearScreen = new System.Windows.Forms.Button();
             this.btnResetCursor2 = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.baudBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -114,17 +116,19 @@
             // 
             // btnResetCursor1
             // 
+            this.btnResetCursor1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.btnResetCursor1.Font = new System.Drawing.Font("Verdana", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.btnResetCursor1.Location = new System.Drawing.Point(12, 113);
             this.btnResetCursor1.Name = "btnResetCursor1";
             this.btnResetCursor1.Size = new System.Drawing.Size(75, 33);
             this.btnResetCursor1.TabIndex = 66;
-            this.btnResetCursor1.Text = "Reset cursor 1";
+            this.btnResetCursor1.Text = "Reset cursor l1";
             this.btnResetCursor1.UseVisualStyleBackColor = true;
             this.btnResetCursor1.Click += new System.EventHandler(this.btnResetCursor1_Click);
             // 
             // btnClearScreen
             // 
+            this.btnClearScreen.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.btnClearScreen.Font = new System.Drawing.Font("Verdana", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.btnClearScreen.Location = new System.Drawing.Point(217, 113);
             this.btnClearScreen.Name = "btnClearScreen";
@@ -136,20 +140,41 @@
             // 
             // btnResetCursor2
             // 
+            this.btnResetCursor2.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.btnResetCursor2.Font = new System.Drawing.Font("Verdana", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.btnResetCursor2.Location = new System.Drawing.Point(93, 113);
             this.btnResetCursor2.Name = "btnResetCursor2";
             this.btnResetCursor2.Size = new System.Drawing.Size(75, 33);
             this.btnResetCursor2.TabIndex = 68;
-            this.btnResetCursor2.Text = "Reset cursor 2";
+            this.btnResetCursor2.Text = "Reset cursor l2";
             this.btnResetCursor2.UseVisualStyleBackColor = true;
             this.btnResetCursor2.Click += new System.EventHandler(this.btnResetCursor2_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(375, 125);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 69;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(414, 109);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.TabIndex = 70;
+            this.label1.Text = "Charset";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(508, 207);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.btnResetCursor2);
             this.Controls.Add(this.btnClearScreen);
             this.Controls.Add(this.btnResetCursor1);
@@ -179,6 +204,8 @@
         private System.Windows.Forms.Button btnResetCursor2;
         public System.Windows.Forms.TextBox textBox1;
         public System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
