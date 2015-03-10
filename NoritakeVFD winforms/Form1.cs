@@ -36,8 +36,10 @@ namespace NoritakeVFD_winforms
         {
             if (openport.Checked)
             {
-                stuff.Serial.Connect();
                 stuff.Serial.uart.Parity = System.IO.Ports.Parity.Odd; //vfd controller specific
+                stuff.Serial.Connect();
+
+                stuff.Serial.ClearScreen();
             }
             else
             {

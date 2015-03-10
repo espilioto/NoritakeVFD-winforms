@@ -10,33 +10,34 @@ namespace NoritakeVFD_winforms
     class stuff
     {
         public static byte left = 0, right = 0;
+        public static int cursorPosition = 0;
 
         //stores the cursor position in dec ascii format. example: 1 = 49 / 15 = 49, 53
-        public static void CurPos2Hex(int cursorPosition)
+        public static void CurPos2Hex(int curPos)
         {
             int left = 0, right = 0;
 
-            if (cursorPosition < 9)
+            if (curPos < 9)
             {
-                left = (cursorPosition + 49);
+                left = (curPos + 49);
 
                 stuff.left = (byte)left;
                 stuff.right = 0;
             }
             else
             {
-                right = (cursorPosition % 10) + 49;
+                right = (curPos % 10) + 49;
 
                 if (right > 57) //if the second digit is greater than 9... 
                 {
-                    left = 50;  //the cursor's column is 20
+                    left = 50;  //...the cursor is in column 20, so the left digit is 2
                 }
                 else
                 {
-                    left = 49; //else, it's between 10 and 19
+                    left = 49; //else, it's between 10 and 19, so make the first digit 1
                 }
-                
-                if (right == 58) //if right is supposed to be 0, make it actually 0 and not ':' (dec 58 in ascii)
+
+                if (right == 58) //if right is supposed to be 0 (aka column 20), make it actually 0 and not ':' (dec 58 in ascii)
                 {
                     right = 48;
                 }
@@ -44,6 +45,7 @@ namespace NoritakeVFD_winforms
 
                 stuff.left = (byte)left;
                 stuff.right = (byte)right;
+                cursorPosition = curPos++;
             }
         }
 
@@ -97,9 +99,9 @@ namespace NoritakeVFD_winforms
             {
                 byte[] command = new byte[1] { 0x08 };
 
-                if (left == 2 && right == 0)
+                if (cursorPosition == 20)
                 {
-                    uart.Write(" ");                        
+                    uart.Write(" ");
                 }
                 else
                 {
