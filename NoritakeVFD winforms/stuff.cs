@@ -95,7 +95,7 @@ namespace NoritakeVFD_winforms
                 connected = false;
             }
 
-            public static void WriteBackspace()
+            public static void DisplayWriteBackspace()
             {
                 byte[] command = new byte[1] { 0x08 };
 
@@ -110,35 +110,35 @@ namespace NoritakeVFD_winforms
                     uart.Write(command, 0, 1);
                 }
             }
-            public static void CurPos(byte line, byte col)
+            public static void DisplayCurPos(byte line, byte col)
             {
                 byte[] command = new byte[6] { 0x1B, 0x5B, line, 0x3B, col, 0x48 }; //command: ESC[<line>;<column number>H
                 uart.Write(command, 0, 6);
             }
-            public static void CurPos(byte line, byte colH, byte colL)
+            public static void Display(byte line, byte colH, byte colL)
             {
                 byte[] command = new byte[7] { 0x1B, 0x5B, line, 0x3B, colH, colL, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
                 uart.Write(command, 0, 7);
             }
-            public static void ClearScreen()
+            public static void DisplayClearScreen()
             {
                 byte[] command = new byte[4] { 0x1B, 0x5B, 0x32, 0x4A };
                 uart.Write(command, 0, 4);
-                SetCursorToLine1();
+                DisplaySetCursorToLine1();
 
                 Form1.form1.textBox1.Clear();
                 Form1.form1.textBox2.Clear();
 
                 Form1.form1.textBox1.Focus();
             }
-            public static void SetCursorToLine1()
+            public static void DisplaySetCursorToLine1()
             {
                 byte[] command = new byte[6] { 0x1B, 0x5B, 0x31, 0x3B, 0x31, 0x48 };
                 uart.Write(command, 0, 6);
 
                 Form1.form1.textBox1.Focus();
             }
-            public static void SetCursorToLine2()
+            public static void DisplaySetCursorToLine2()
             {
                 byte[] command = new byte[6] { 0x1B, 0x5B, 0x32, 0x3B, 0x31, 0x48 };
                 uart.Write(command, 0, 6);
