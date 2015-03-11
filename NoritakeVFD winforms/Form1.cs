@@ -129,6 +129,39 @@ namespace NoritakeVFD_winforms
             //TODO charsets
         }
 
+        private void radioMainMode_CheckedChanged(object sender, EventArgs e)
+        {
+            panelMain.Visible = true;
+            panelFlashingMessage.Visible = false;
+            panelScroll.Visible = false;
+        }
+        private void radioFlashingMessage_CheckedChanged(object sender, EventArgs e)
+        {
+            panelFlashingMessage.Visible = true;
+            panelMain.Visible = false;
+            panelScroll.Visible = false;
+        }
+        private void radioScrollingMessage_CheckedChanged(object sender, EventArgs e)
+        {
+            panelScroll.Visible = true;
+            panelMain.Visible = false;
+            panelFlashingMessage.Visible = false;
+        }
+
+        private void btnFlashing_CheckedChanged(object sender, EventArgs e)
+        {
+            if (btnFlashing.Checked)
+            {
+                Stuff.Serial.DisplayFlashMessage(0x31, 1000, "      sup dawg      ");
+                timer.Enabled = true;
+                timer.Start();
+            }
+            else
+            {
+                timer.Stop();
+                timer.Enabled = false;
+            }
+        }
 
     }
 }

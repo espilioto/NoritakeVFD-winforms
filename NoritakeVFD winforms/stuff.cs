@@ -146,6 +146,26 @@ namespace NoritakeVFD_winforms
 
                 Form1.form1.textBox2.Focus();
             }
+            /// <param name="line">Which line of the display you want to use. 0x31 for line 1, 0x32 for line 2 etc.</param>
+            /// <param name="spaces">Number of " " between messages.</param>
+            /// <param name="direction">true for left to right, false for the opposite.</param>
+            /// <param name="speed">Scrolling speed. Characters/sec.</param>
+            public static void DisplayScrollMessage(int line, int spaces, int speed, bool direction, string message)
+            {
+
+            }
+            /// <param name="message">Include the spaces in the string plox.</param>
+            public static void DisplayFlashMessage(int line, int speed, string message)
+            {
+                while (Form1.form1.btnFlashing.Checked)
+                {
+                    DisplayClearScreen();
+                    System.Threading.Thread.Sleep(500);
+                    uart.Write(message);
+                    System.Threading.Thread.Sleep(500);
+                }
+            }
+
         }
     }
 }
