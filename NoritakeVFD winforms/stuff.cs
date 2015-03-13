@@ -11,7 +11,7 @@ namespace NoritakeVFD_winforms
     {
         public static byte left = 0, right = 0;
         public static int cursorPosition = 0;
-
+        static bool flag = true;
 
         //converts the cursor position in dec ascii format, based on the textbox's length. 
         //example: 1 = 49 / 15 = 49, 53
@@ -56,6 +56,33 @@ namespace NoritakeVFD_winforms
             public static SerialPort uart = new SerialPort();
             public static System.Collections.ArrayList portlist = new System.Collections.ArrayList();
 
+            public static List<byte[]> charsets = new List<byte[]>
+            {
+                new byte [] { 0x1B, 0x52, 0x00 },
+                new byte [] { 0x1B, 0x52, 0x01 },
+                new byte [] { 0x1B, 0x52, 0x02 },
+                new byte [] { 0x1B, 0x52, 0x03 },
+                new byte [] { 0x1B, 0x52, 0x04 },
+                new byte [] { 0x1B, 0x52, 0x05 },
+                new byte [] { 0x1B, 0x52, 0x06 },
+                new byte [] { 0x1B, 0x52, 0x07 },
+                new byte [] { 0x1B, 0x52, 0x08 },
+                new byte [] { 0x1B, 0x52, 0x09 },
+                new byte [] { 0x1B, 0x52, 0x0A },
+                new byte [] { 0x1B, 0x52, 0x0B },
+                new byte [] { 0x1B, 0x52, 0x0C },
+                new byte [] { 0x1B, 0x52, 0x30 },
+                new byte [] { 0x1B, 0x52, 0x31 },
+                new byte [] { 0x1B, 0x52, 0x32 },
+                new byte [] { 0x1B, 0x52, 0x33 },
+                new byte [] { 0x1B, 0x52, 0x35 },
+                new byte [] { 0x1B, 0x52, 0x37 },
+                new byte [] { 0x1B, 0x52, 0x36 },
+                new byte [] { 0x1B, 0x52, 0x38 },
+                new byte [] { 0x1B, 0x52, 0x63 }
+            };
+
+
             public static void GetPorts()
             {
                 foreach (var port in SerialPort.GetPortNames())
@@ -76,8 +103,6 @@ namespace NoritakeVFD_winforms
                     uart.Open();
 
                     Form1.form1.openport.BackColor = System.Drawing.Color.LightGreen;
-
-                    connected = true;
                 }
 
                 catch (System.Exception ex)
@@ -146,24 +171,30 @@ namespace NoritakeVFD_winforms
 
                 Form1.form1.textBox2.Focus();
             }
-            /// <param name="line">Which line of the display you want to use. 0x31 for line 1, 0x32 for line 2 etc.</param>
             /// <param name="spaces">Number of " " between messages.</param>
             /// <param name="direction">true for left to right, false for the opposite.</param>
-            /// <param name="speed">Scrolling speed. Characters/sec.</param>
-            public static void DisplayScrollMessage(int line, int spaces, int speed, bool direction, string message)
+            public static void DisplayScrollMessage(int spaces, bool direction, string message)
             {
 
             }
             /// <param name="message">Include the spaces in the string plox.</param>
-            public static void DisplayFlashMessage(int line, int speed, string message)
+            public static void DisplayFlashMessage(string message)
             {
-                while (Form1.form1.btnFlashing.Checked)
+
+
+                if (flag)
+                {
+                    uart.Write(message);
+
+                    flag = !flag;
+                }
+                else
                 {
                     DisplayClearScreen();
-                    System.Threading.Thread.Sleep(500);
-                    uart.Write(message);
-                    System.Threading.Thread.Sleep(500);
+
+                    flag = !flag;
                 }
+
             }
 
         }

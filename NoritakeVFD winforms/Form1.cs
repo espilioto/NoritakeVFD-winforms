@@ -29,8 +29,9 @@ namespace NoritakeVFD_winforms
                 portBox.Items.Add(port);
             }
             portBox.SelectedIndex = 0;
-        }
 
+            cboxCharset.SelectedIndex = 2;
+        }
 
         private void openport_CheckedChanged(object sender, EventArgs e)
         {
@@ -88,7 +89,7 @@ namespace NoritakeVFD_winforms
 
         private void textBox1_Click(object sender, EventArgs e)
         {
-            Stuff.CurPos2Hex(textBox1.Text.Length);
+            Stuff.CurPos2Hex(textBox1.SelectionStart);
             if (Stuff.right == 0)
             {
                 Stuff.Serial.DisplaySetCurPos(0x31, Stuff.left);
@@ -100,7 +101,7 @@ namespace NoritakeVFD_winforms
         }
         private void textBox2_Click(object sender, EventArgs e)
         {
-            Stuff.CurPos2Hex(textBox2.Text.Length);
+            Stuff.CurPos2Hex(textBox2.SelectionStart);
             if (Stuff.right == 0)
             {
                 Stuff.Serial.DisplaySetCurPos(0x32, Stuff.left);
@@ -124,9 +125,9 @@ namespace NoritakeVFD_winforms
             Stuff.Serial.DisplayClearScreen();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboxCharset_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //TODO charsets
+            Stuff.Serial.uart.Write(Stuff.Serial.charsets[cboxCharset.SelectedIndex], 0, 3);
         }
 
         private void radioMainMode_CheckedChanged(object sender, EventArgs e)
@@ -152,14 +153,44 @@ namespace NoritakeVFD_winforms
         {
             if (btnFlashing.Checked)
             {
-                Stuff.Serial.DisplayFlashMessage(0x31, 1000, "      sup dawg      ");
                 timer.Enabled = true;
+                timer.Interval = 500; //TODO speed slider or sth
                 timer.Start();
             }
             else
             {
                 timer.Stop();
                 timer.Enabled = false;
+
+                Stuff.Serial.DisplayClearScreen();
+            }
+        }
+        private void btnScrolling_CheckedChanged(object sender, EventArgs e)
+        {
+            if (btnScrolling.Checked)
+            {
+                timer.Enabled = true;
+                timer.Interval = 500; //TODO speed slider or sth
+                timer.Start();
+            }
+            else
+            {
+                timer.Stop();
+                timer.Enabled = false;
+
+                Stuff.Serial.DisplayClearScreen();
+            }
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            if (btnScrolling.Checked)
+            {
+                Stuff.Serial.DisplayScrollMessage(2, true, txtScroll.Text);
+            }
+            else if (btnFlashing.Checked)
+            {
+                Stuff.Serial.DisplayFlashMessage(txtFlash.Text);
             }
         }
 

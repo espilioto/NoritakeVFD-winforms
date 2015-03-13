@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.timer = new System.Windows.Forms.Timer(this.components);
             this.radioMainMode = new System.Windows.Forms.RadioButton();
             this.radioFlashingMessage = new System.Windows.Forms.RadioButton();
             this.radioScrollingMessage = new System.Windows.Forms.RadioButton();
@@ -37,7 +36,7 @@
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.panelMain = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.cboxCharset = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -47,11 +46,14 @@
             this.portBox = new System.Windows.Forms.ComboBox();
             this.baudBox = new System.Windows.Forms.NumericUpDown();
             this.panelFlashingMessage = new System.Windows.Forms.Panel();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txtFlash = new System.Windows.Forms.TextBox();
             this.btnFlashing = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panelScroll = new System.Windows.Forms.Panel();
+            this.txtScroll = new System.Windows.Forms.TextBox();
+            this.btnScrolling = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.baudBox)).BeginInit();
             this.panelFlashingMessage.SuspendLayout();
@@ -131,7 +133,7 @@
             // panelMain
             // 
             this.panelMain.Controls.Add(this.label2);
-            this.panelMain.Controls.Add(this.comboBox2);
+            this.panelMain.Controls.Add(this.cboxCharset);
             this.panelMain.Controls.Add(this.button1);
             this.panelMain.Controls.Add(this.button2);
             this.panelMain.Controls.Add(this.button3);
@@ -149,20 +151,45 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(410, 102);
+            this.label2.Location = new System.Drawing.Point(406, 102);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
             this.label2.TabIndex = 96;
             this.label2.Text = "Charset";
             // 
-            // comboBox2
+            // cboxCharset
             // 
-            this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(371, 118);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 21);
-            this.comboBox2.TabIndex = 95;
+            this.cboxCharset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboxCharset.FormattingEnabled = true;
+            this.cboxCharset.Items.AddRange(new object[] {
+            "USA",
+            "France",
+            "Germany",
+            "Great Britain",
+            "Denmark 1",
+            "Sweden",
+            "Italy",
+            "Spain 1",
+            "Japan",
+            "Norway",
+            "Denmark 2",
+            "Spain 2",
+            "Latin America",
+            "Charset Standard (437)",
+            "Charset Latin 1 (850)",
+            "Charset Latin 2 (852)",
+            "Charset Latin 5/Turkey (857)",
+            "Charset Latin/Cyrillic (866)",
+            "Charset Latin/Hebrew (862)",
+            "Charset Latin/Greek 2 (737)",
+            "Charset Latin/Greek 2 (IBM813)",
+            "Charset Latin/Katakana"});
+            this.cboxCharset.Location = new System.Drawing.Point(354, 117);
+            this.cboxCharset.MaxDropDownItems = 99;
+            this.cboxCharset.Name = "cboxCharset";
+            this.cboxCharset.Size = new System.Drawing.Size(138, 21);
+            this.cboxCharset.TabIndex = 95;
+            this.cboxCharset.SelectedIndexChanged += new System.EventHandler(this.cboxCharset_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -209,6 +236,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(484, 43);
             this.textBox2.TabIndex = 89;
+            this.textBox2.TabStop = false;
             this.textBox2.WordWrap = false;
             this.textBox2.Click += new System.EventHandler(this.textBox2_Click);
             this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox2_KeyPress);
@@ -235,7 +263,7 @@
             this.openport.Location = new System.Drawing.Point(290, 183);
             this.openport.Name = "openport";
             this.openport.Size = new System.Drawing.Size(70, 25);
-            this.openport.TabIndex = 87;
+            this.openport.TabIndex = 0;
             this.openport.Text = "Connect";
             this.openport.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.openport.UseVisualStyleBackColor = true;
@@ -275,7 +303,7 @@
             // 
             // panelFlashingMessage
             // 
-            this.panelFlashingMessage.Controls.Add(this.textBox3);
+            this.panelFlashingMessage.Controls.Add(this.txtFlash);
             this.panelFlashingMessage.Controls.Add(this.btnFlashing);
             this.panelFlashingMessage.Controls.Add(this.label1);
             this.panelFlashingMessage.Location = new System.Drawing.Point(103, 3);
@@ -284,13 +312,13 @@
             this.panelFlashingMessage.TabIndex = 97;
             this.panelFlashingMessage.Visible = false;
             // 
-            // textBox3
+            // txtFlash
             // 
-            this.textBox3.Location = new System.Drawing.Point(78, 43);
-            this.textBox3.MaxLength = 20;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(300, 20);
-            this.textBox3.TabIndex = 3;
+            this.txtFlash.Location = new System.Drawing.Point(78, 43);
+            this.txtFlash.MaxLength = 20;
+            this.txtFlash.Name = "txtFlash";
+            this.txtFlash.Size = new System.Drawing.Size(300, 20);
+            this.txtFlash.TabIndex = 3;
             // 
             // btnFlashing
             // 
@@ -315,12 +343,34 @@
             // 
             // panelScroll
             // 
+            this.panelScroll.Controls.Add(this.txtScroll);
+            this.panelScroll.Controls.Add(this.btnScrolling);
             this.panelScroll.Controls.Add(this.label3);
             this.panelScroll.Location = new System.Drawing.Point(103, 3);
             this.panelScroll.Name = "panelScroll";
             this.panelScroll.Size = new System.Drawing.Size(500, 212);
             this.panelScroll.TabIndex = 98;
             this.panelScroll.Visible = false;
+            // 
+            // txtScroll
+            // 
+            this.txtScroll.Location = new System.Drawing.Point(114, 54);
+            this.txtScroll.MaxLength = 20;
+            this.txtScroll.Name = "txtScroll";
+            this.txtScroll.Size = new System.Drawing.Size(300, 20);
+            this.txtScroll.TabIndex = 4;
+            // 
+            // btnScrolling
+            // 
+            this.btnScrolling.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnScrolling.Location = new System.Drawing.Point(222, 156);
+            this.btnScrolling.Name = "btnScrolling";
+            this.btnScrolling.Size = new System.Drawing.Size(76, 24);
+            this.btnScrolling.TabIndex = 3;
+            this.btnScrolling.Text = "Start";
+            this.btnScrolling.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnScrolling.UseVisualStyleBackColor = true;
+            this.btnScrolling.CheckedChanged += new System.EventHandler(this.btnScrolling_CheckedChanged);
             // 
             // label3
             // 
@@ -330,6 +380,10 @@
             this.label3.Size = new System.Drawing.Size(31, 13);
             this.label3.TabIndex = 0;
             this.label3.Text = "scroll";
+            // 
+            // timer
+            // 
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // Form1
             // 
@@ -341,9 +395,9 @@
             this.Controls.Add(this.radioScrollingMessage);
             this.Controls.Add(this.radioFlashingMessage);
             this.Controls.Add(this.radioMainMode);
+            this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelFlashingMessage);
             this.Controls.Add(this.panelScroll);
-            this.Controls.Add(this.panelMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -362,7 +416,6 @@
 
         #endregion
 
-        public System.Windows.Forms.Timer timer;
         private System.Windows.Forms.RadioButton radioMainMode;
         private System.Windows.Forms.RadioButton radioFlashingMessage;
         private System.Windows.Forms.RadioButton radioScrollingMessage;
@@ -370,7 +423,7 @@
         private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox cboxCharset;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
@@ -383,8 +436,11 @@
         private System.Windows.Forms.Panel panelScroll;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txtFlash;
         public System.Windows.Forms.CheckBox btnFlashing;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.TextBox txtScroll;
+        public System.Windows.Forms.CheckBox btnScrolling;
     }
 }
 
