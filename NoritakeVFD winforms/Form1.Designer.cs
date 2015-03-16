@@ -46,14 +46,14 @@
             this.portBox = new System.Windows.Forms.ComboBox();
             this.baudBox = new System.Windows.Forms.NumericUpDown();
             this.panelFlashingMessage = new System.Windows.Forms.Panel();
-            this.txtFlash = new System.Windows.Forms.TextBox();
             this.btnFlashing = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.panelScroll = new System.Windows.Forms.Panel();
             this.txtScroll = new System.Windows.Forms.TextBox();
             this.btnScrolling = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.txtFlash2 = new System.Windows.Forms.TextBox();
+            this.txtFlash1 = new System.Windows.Forms.TextBox();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.baudBox)).BeginInit();
             this.panelFlashingMessage.SuspendLayout();
@@ -303,27 +303,19 @@
             // 
             // panelFlashingMessage
             // 
-            this.panelFlashingMessage.Controls.Add(this.txtFlash);
+            this.panelFlashingMessage.Controls.Add(this.txtFlash2);
+            this.panelFlashingMessage.Controls.Add(this.txtFlash1);
             this.panelFlashingMessage.Controls.Add(this.btnFlashing);
-            this.panelFlashingMessage.Controls.Add(this.label1);
             this.panelFlashingMessage.Location = new System.Drawing.Point(103, 3);
             this.panelFlashingMessage.Name = "panelFlashingMessage";
             this.panelFlashingMessage.Size = new System.Drawing.Size(500, 212);
             this.panelFlashingMessage.TabIndex = 97;
             this.panelFlashingMessage.Visible = false;
             // 
-            // txtFlash
-            // 
-            this.txtFlash.Location = new System.Drawing.Point(78, 43);
-            this.txtFlash.MaxLength = 20;
-            this.txtFlash.Name = "txtFlash";
-            this.txtFlash.Size = new System.Drawing.Size(300, 20);
-            this.txtFlash.TabIndex = 3;
-            // 
             // btnFlashing
             // 
             this.btnFlashing.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnFlashing.Location = new System.Drawing.Point(212, 156);
+            this.btnFlashing.Location = new System.Drawing.Point(212, 145);
             this.btnFlashing.Name = "btnFlashing";
             this.btnFlashing.Size = new System.Drawing.Size(76, 24);
             this.btnFlashing.TabIndex = 2;
@@ -331,15 +323,6 @@
             this.btnFlashing.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.btnFlashing.UseVisualStyleBackColor = true;
             this.btnFlashing.CheckedChanged += new System.EventHandler(this.btnFlashing_CheckedChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(139, 138);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "flash";
             // 
             // panelScroll
             // 
@@ -385,6 +368,29 @@
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
+            // txtFlash2
+            // 
+            this.txtFlash2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFlash2.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.txtFlash2.Location = new System.Drawing.Point(9, 61);
+            this.txtFlash2.MaxLength = 20;
+            this.txtFlash2.Name = "txtFlash2";
+            this.txtFlash2.Size = new System.Drawing.Size(484, 43);
+            this.txtFlash2.TabIndex = 91;
+            this.txtFlash2.TabStop = false;
+            this.txtFlash2.WordWrap = false;
+            // 
+            // txtFlash1
+            // 
+            this.txtFlash1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFlash1.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.txtFlash1.Location = new System.Drawing.Point(9, 9);
+            this.txtFlash1.MaxLength = 20;
+            this.txtFlash1.Name = "txtFlash1";
+            this.txtFlash1.Size = new System.Drawing.Size(484, 43);
+            this.txtFlash1.TabIndex = 90;
+            this.txtFlash1.WordWrap = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,9 +401,9 @@
             this.Controls.Add(this.radioScrollingMessage);
             this.Controls.Add(this.radioFlashingMessage);
             this.Controls.Add(this.radioMainMode);
-            this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelFlashingMessage);
             this.Controls.Add(this.panelScroll);
+            this.Controls.Add(this.panelMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -435,12 +441,12 @@
         private System.Windows.Forms.Panel panelFlashingMessage;
         private System.Windows.Forms.Panel panelScroll;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtFlash;
         public System.Windows.Forms.CheckBox btnFlashing;
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.TextBox txtScroll;
         public System.Windows.Forms.CheckBox btnScrolling;
+        public System.Windows.Forms.TextBox txtFlash2;
+        public System.Windows.Forms.TextBox txtFlash1;
     }
 }
 

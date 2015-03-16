@@ -180,8 +180,6 @@ namespace NoritakeVFD_winforms
             /// <param name="message">Include the spaces in the string plox.</param>
             public static void DisplayFlashMessage(string message)
             {
-
-
                 if (flag)
                 {
                     uart.Write(message);
@@ -194,9 +192,24 @@ namespace NoritakeVFD_winforms
 
                     flag = !flag;
                 }
-
             }
+            public static void DisplayFlashMessage(string Line1Message, string Line2Message)
+            {
+                if (flag)
+                {
+                    uart.Write(Line1Message);
+                    DisplaySetCursorToLine2();
+                    uart.Write(Line2Message);
+                    
+                    flag = !flag;
+                }
+                else
+                {
+                    DisplayClearScreen();
 
+                    flag = !flag;
+                }
+            }
         }
     }
 }

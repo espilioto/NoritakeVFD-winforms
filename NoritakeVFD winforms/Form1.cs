@@ -153,6 +153,12 @@ namespace NoritakeVFD_winforms
         {
             if (btnFlashing.Checked)
             {
+                if (string.IsNullOrWhiteSpace(txtFlash1.Text) && string.IsNullOrWhiteSpace(txtFlash2.Text))
+                {
+                    btnFlashing.Checked = false;
+                    MessageBox.Show("Some text would help.");
+                }
+
                 timer.Enabled = true;
                 timer.Interval = 500; //TODO speed slider or sth
                 timer.Start();
@@ -190,7 +196,7 @@ namespace NoritakeVFD_winforms
             }
             else if (btnFlashing.Checked)
             {
-                Stuff.Serial.DisplayFlashMessage(txtFlash.Text);
+                    Stuff.Serial.DisplayFlashMessage(txtFlash1.Text, txtFlash2.Text);
             }
         }
 
