@@ -48,16 +48,24 @@
             this.panelFlashingMessage = new System.Windows.Forms.Panel();
             this.btnFlashing = new System.Windows.Forms.CheckBox();
             this.panelScroll = new System.Windows.Forms.Panel();
-            this.txtScroll = new System.Windows.Forms.TextBox();
             this.btnScrolling = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.txtFlash2 = new System.Windows.Forms.TextBox();
             this.txtFlash1 = new System.Windows.Forms.TextBox();
+            this.txtScroll2 = new System.Windows.Forms.TextBox();
+            this.txtScroll1 = new System.Windows.Forms.TextBox();
+            this.trackBarFlash = new System.Windows.Forms.TrackBar();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.trackBarScroll = new System.Windows.Forms.TrackBar();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.baudBox)).BeginInit();
             this.panelFlashingMessage.SuspendLayout();
             this.panelScroll.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarFlash)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).BeginInit();
             this.SuspendLayout();
             // 
             // radioMainMode
@@ -231,7 +239,7 @@
             // 
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox2.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.textBox2.Location = new System.Drawing.Point(8, 57);
+            this.textBox2.Location = new System.Drawing.Point(9, 61);
             this.textBox2.MaxLength = 20;
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(484, 43);
@@ -245,7 +253,7 @@
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.textBox1.Location = new System.Drawing.Point(8, 5);
+            this.textBox1.Location = new System.Drawing.Point(9, 9);
             this.textBox1.MaxLength = 20;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(484, 43);
@@ -303,6 +311,9 @@
             // 
             // panelFlashingMessage
             // 
+            this.panelFlashingMessage.Controls.Add(this.label4);
+            this.panelFlashingMessage.Controls.Add(this.label1);
+            this.panelFlashingMessage.Controls.Add(this.trackBarFlash);
             this.panelFlashingMessage.Controls.Add(this.txtFlash2);
             this.panelFlashingMessage.Controls.Add(this.txtFlash1);
             this.panelFlashingMessage.Controls.Add(this.btnFlashing);
@@ -315,7 +326,7 @@
             // btnFlashing
             // 
             this.btnFlashing.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnFlashing.Location = new System.Drawing.Point(212, 145);
+            this.btnFlashing.Location = new System.Drawing.Point(212, 179);
             this.btnFlashing.Name = "btnFlashing";
             this.btnFlashing.Size = new System.Drawing.Size(76, 24);
             this.btnFlashing.TabIndex = 2;
@@ -326,27 +337,22 @@
             // 
             // panelScroll
             // 
-            this.panelScroll.Controls.Add(this.txtScroll);
-            this.panelScroll.Controls.Add(this.btnScrolling);
             this.panelScroll.Controls.Add(this.label3);
+            this.panelScroll.Controls.Add(this.label5);
+            this.panelScroll.Controls.Add(this.trackBarScroll);
+            this.panelScroll.Controls.Add(this.txtScroll2);
+            this.panelScroll.Controls.Add(this.txtScroll1);
+            this.panelScroll.Controls.Add(this.btnScrolling);
             this.panelScroll.Location = new System.Drawing.Point(103, 3);
             this.panelScroll.Name = "panelScroll";
             this.panelScroll.Size = new System.Drawing.Size(500, 212);
             this.panelScroll.TabIndex = 98;
             this.panelScroll.Visible = false;
             // 
-            // txtScroll
-            // 
-            this.txtScroll.Location = new System.Drawing.Point(114, 54);
-            this.txtScroll.MaxLength = 20;
-            this.txtScroll.Name = "txtScroll";
-            this.txtScroll.Size = new System.Drawing.Size(300, 20);
-            this.txtScroll.TabIndex = 4;
-            // 
             // btnScrolling
             // 
             this.btnScrolling.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnScrolling.Location = new System.Drawing.Point(222, 156);
+            this.btnScrolling.Location = new System.Drawing.Point(212, 179);
             this.btnScrolling.Name = "btnScrolling";
             this.btnScrolling.Size = new System.Drawing.Size(76, 24);
             this.btnScrolling.TabIndex = 3;
@@ -354,15 +360,6 @@
             this.btnScrolling.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.btnScrolling.UseVisualStyleBackColor = true;
             this.btnScrolling.CheckedChanged += new System.EventHandler(this.btnScrolling_CheckedChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(247, 95);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "scroll";
             // 
             // timer
             // 
@@ -391,6 +388,86 @@
             this.txtFlash1.TabIndex = 90;
             this.txtFlash1.WordWrap = false;
             // 
+            // txtScroll2
+            // 
+            this.txtScroll2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtScroll2.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.txtScroll2.Location = new System.Drawing.Point(9, 61);
+            this.txtScroll2.MaxLength = 20;
+            this.txtScroll2.Name = "txtScroll2";
+            this.txtScroll2.Size = new System.Drawing.Size(484, 43);
+            this.txtScroll2.TabIndex = 93;
+            this.txtScroll2.TabStop = false;
+            this.txtScroll2.WordWrap = false;
+            // 
+            // txtScroll1
+            // 
+            this.txtScroll1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtScroll1.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.txtScroll1.Location = new System.Drawing.Point(9, 9);
+            this.txtScroll1.MaxLength = 20;
+            this.txtScroll1.Name = "txtScroll1";
+            this.txtScroll1.Size = new System.Drawing.Size(484, 43);
+            this.txtScroll1.TabIndex = 92;
+            this.txtScroll1.WordWrap = false;
+            // 
+            // trackBarFlash
+            // 
+            this.trackBarFlash.Location = new System.Drawing.Point(148, 109);
+            this.trackBarFlash.Minimum = 1;
+            this.trackBarFlash.Name = "trackBarFlash";
+            this.trackBarFlash.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.trackBarFlash.Size = new System.Drawing.Size(212, 45);
+            this.trackBarFlash.TabIndex = 92;
+            this.trackBarFlash.Value = 10;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(107, 125);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(30, 13);
+            this.label1.TabIndex = 93;
+            this.label1.Text = "Slow";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(366, 125);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(27, 13);
+            this.label4.TabIndex = 94;
+            this.label4.Text = "Fast";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(366, 125);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(27, 13);
+            this.label3.TabIndex = 97;
+            this.label3.Text = "Fast";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(107, 125);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(30, 13);
+            this.label5.TabIndex = 96;
+            this.label5.Text = "Slow";
+            // 
+            // trackBarScroll
+            // 
+            this.trackBarScroll.LargeChange = 2;
+            this.trackBarScroll.Location = new System.Drawing.Point(148, 109);
+            this.trackBarScroll.Minimum = 1;
+            this.trackBarScroll.Name = "trackBarScroll";
+            this.trackBarScroll.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.trackBarScroll.Size = new System.Drawing.Size(212, 45);
+            this.trackBarScroll.TabIndex = 95;
+            this.trackBarScroll.Value = 10;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -401,9 +478,9 @@
             this.Controls.Add(this.radioScrollingMessage);
             this.Controls.Add(this.radioFlashingMessage);
             this.Controls.Add(this.radioMainMode);
-            this.Controls.Add(this.panelFlashingMessage);
             this.Controls.Add(this.panelScroll);
             this.Controls.Add(this.panelMain);
+            this.Controls.Add(this.panelFlashingMessage);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -416,6 +493,8 @@
             this.panelFlashingMessage.PerformLayout();
             this.panelScroll.ResumeLayout(false);
             this.panelScroll.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarFlash)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -440,13 +519,19 @@
         public System.Windows.Forms.NumericUpDown baudBox;
         private System.Windows.Forms.Panel panelFlashingMessage;
         private System.Windows.Forms.Panel panelScroll;
-        private System.Windows.Forms.Label label3;
         public System.Windows.Forms.CheckBox btnFlashing;
         private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.TextBox txtScroll;
         public System.Windows.Forms.CheckBox btnScrolling;
         public System.Windows.Forms.TextBox txtFlash2;
         public System.Windows.Forms.TextBox txtFlash1;
+        public System.Windows.Forms.TextBox txtScroll2;
+        public System.Windows.Forms.TextBox txtScroll1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TrackBar trackBarFlash;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TrackBar trackBarScroll;
     }
 }
 

@@ -173,7 +173,7 @@ namespace NoritakeVFD_winforms
             }
             /// <param name="spaces">Number of " " between messages.</param>
             /// <param name="direction">true for left to right, false for the opposite.</param>
-            public static void DisplayScrollMessage(int spaces, bool direction, string message)
+            public static void DisplayScrollMessage(int spaces, bool direction, string Line1Message, string Line2Message)
             {
 
             }

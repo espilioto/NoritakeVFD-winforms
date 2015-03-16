@@ -149,18 +149,18 @@ namespace NoritakeVFD_winforms
             panelFlashingMessage.Visible = false;
         }
 
-        private void btnFlashing_CheckedChanged(object sender, EventArgs e)
+        private void btnFlashing_CheckedChanged(object sender, EventArgs e) //FLASH
         {
             if (btnFlashing.Checked)
             {
-                if (string.IsNullOrWhiteSpace(txtFlash1.Text) && string.IsNullOrWhiteSpace(txtFlash2.Text))
+                if (string.IsNullOrWhiteSpace(txtFlash1.Text) && string.IsNullOrWhiteSpace(txtFlash2.Text)) //check if there's text first
                 {
                     btnFlashing.Checked = false;
                     MessageBox.Show("Some text would help.");
                 }
-
+                btnFlashing.Text = "Stop";                
                 timer.Enabled = true;
-                timer.Interval = 500; //TODO speed slider or sth
+                timer.Interval = trackBarFlash.Value * 100;                
                 timer.Start();
             }
             else
@@ -169,14 +169,21 @@ namespace NoritakeVFD_winforms
                 timer.Enabled = false;
 
                 Stuff.Serial.DisplayClearScreen();
+                btnFlashing.Text = "Start";                
             }
         }
-        private void btnScrolling_CheckedChanged(object sender, EventArgs e)
+        private void btnScrolling_CheckedChanged(object sender, EventArgs e)  //SCROLL
         {
             if (btnScrolling.Checked)
             {
+                if (string.IsNullOrWhiteSpace(txtFlash1.Text) && string.IsNullOrWhiteSpace(txtFlash2.Text)) //check if there's text first
+                {
+                    btnFlashing.Checked = false;
+                    MessageBox.Show("Some text would help.");
+                }
+                btnFlashing.Text = "Stop";                
                 timer.Enabled = true;
-                timer.Interval = 500; //TODO speed slider or sth
+                timer.Interval = trackBarScroll.Value * 100;
                 timer.Start();
             }
             else
@@ -185,6 +192,7 @@ namespace NoritakeVFD_winforms
                 timer.Enabled = false;
 
                 Stuff.Serial.DisplayClearScreen();
+                btnFlashing.Text = "Start";                
             }
         }
 
@@ -192,11 +200,13 @@ namespace NoritakeVFD_winforms
         {
             if (btnScrolling.Checked)
             {
-                Stuff.Serial.DisplayScrollMessage(2, true, txtScroll.Text);
+                timer.Interval = trackBarScroll.Value * 100;
+                Stuff.Serial.DisplayScrollMessage(2, true, txtScroll1.Text, null);
             }
             else if (btnFlashing.Checked)
             {
-                    Stuff.Serial.DisplayFlashMessage(txtFlash1.Text, txtFlash2.Text);
+                timer.Interval = trackBarFlash.Value * 100;
+                Stuff.Serial.DisplayFlashMessage(txtFlash1.Text, txtFlash2.Text);
             }
         }
 
