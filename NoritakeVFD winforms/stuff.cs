@@ -195,40 +195,58 @@ namespace NoritakeVFD_winforms
 
                 Form1.form1.textBox2.Focus();
             }
-            /// <param name="spaces">Number of spaces between messages.</param>
-            /// <param name="direction">true for right to left, false for the opposite.</param>
-            public static void DisplayScrollMessageR2L(int spaces, string Line1Message, string Line2Message)
+
+            /// <param name="scrollSpeed">Set the character scrolling speed on the display in ms.</param>
+            /// <param name="replaySpeed">Set the frequency that the message is replayed in ms.</param>
+            public static void DisplayScrollMessageR2L(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message)
             {
                 for (int i = 20; i > -1; i--)
                 {
-                    CurPos2Hex(i);
+                    CurPos2Hex(i);              //find the cursor's position.
 
                     if (right == 0)
                     {
-                        DisplaySetCurPos((byte)Display.Line1, left); 
+                        DisplaySetCurPos((byte)Display.Line1, left);    //if the position is 1 - 9, send only 1 byte.
                     }
                     else
                     {
-                        DisplaySetCurPos((byte)Display.Line1, left, right);
+                        DisplaySetCurPos((byte)Display.Line1, left, right); //if it's more than 9, send both digits tha represent the column number.
                     }
 
-                    if (i == 0)       //if the cursor is in column 1, start not sending the string's first letters
+                    if (i == 0)       //if the cursor is in column 1, start not sending the string's first letters.
                     {
                         for (int j = 0; j < Line1Message.Length; j++)
                         {
                             uart.Write(Line1Message.Substring(j));
                             DisplayDeleteToEndOfLine();
                             DisplaySetCursorToLine1();
+                            System.Threading.Thread.Sleep(scrollSpeed); //being a scrublord works
+                         
+                            if (j == Line1Message.Length - 1) //if the last letter was sent, reset the loop.
+                            {
+                                i = 20;
+                                DisplayClearScreen();
+                            }
                         }
                     }
                     else
                     {
-                        uart.Write(Line1Message);
+                        if ((20 - i) <= Line1Message.Length) //if the substring is bigger than the string things blow up.
+                        {
+                            uart.Write(Line1Message.Substring(0, 20 - i)); //send only the part of the string that will actually be displayed.
+                        }
+                        else
+                        {
+                            uart.Write(Line1Message);
+                        }
                     }
+
                     if (i < Line1Message.Length)
                     {
                         DisplayDeleteToEndOfLine();
                     }
+
+                    System.Threading.Thread.Sleep(scrollSpeed);
 
                     Application.DoEvents();
 

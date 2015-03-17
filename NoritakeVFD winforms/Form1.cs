@@ -158,9 +158,9 @@ namespace NoritakeVFD_winforms
                     btnFlash.Checked = false;
                     MessageBox.Show("Some text would help.");
                 }
-                btnFlash.Text = "Stop";                
+                btnFlash.Text = "Stop";
                 timer.Enabled = true;
-                timer.Interval = trackBarFlash.Value * 100;                
+                timer.Interval = trackBarFlash.Value * 100;
                 timer.Start();
             }
             else
@@ -169,7 +169,7 @@ namespace NoritakeVFD_winforms
                 timer.Enabled = false;
 
                 Stuff.Serial.DisplayClearScreen();
-                btnFlash.Text = "Start";                
+                btnFlash.Text = "Start";
             }
         }
         private void btnScroll_CheckedChanged(object sender, EventArgs e)  //SCROLL
@@ -183,39 +183,32 @@ namespace NoritakeVFD_winforms
                 }
                 btnScroll.Text = "Stop";
 
-                timer.Enabled = true;
-                timer.Interval = trackBarScroll.Value * 100;
-                timer.Start();
+                if (radioRight2Left.Checked)
+                {
+                    Stuff.Serial.DisplayScrollMessageR2L(150, 2000, txtScroll1.Text, txtScroll2.Text);
+                }
+                else
+                {
+                    Stuff.Serial.DisplayScrollMessageL2R(0, txtScroll1.Text, txtScroll2.Text);
+                }
             }
             else
             {
-                timer.Stop();
-                timer.Enabled = false;
-
                 Stuff.Serial.DisplayClearScreen();
-                btnScroll.Text = "Start";                
+                btnScroll.Text = "Start";
             }
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (btnScroll.Checked)
-            {
-                timer.Interval = trackBarScroll.Value * 500;
-                if (radioRight2Left.Checked)
-                {
-                    Stuff.Serial.DisplayScrollMessageR2L(2, txtScroll1.Text, txtScroll2.Text);
-                }
-                else if(radioLeft2Right.Checked)
-                {
-                    Stuff.Serial.DisplayScrollMessageL2R(2, txtScroll1.Text, txtScroll2.Text);
-                }
-            }
-            else if (btnFlash.Checked)
-            {
-                timer.Interval = trackBarFlash.Value * 100;
-                Stuff.Serial.DisplayFlashMessage(txtFlash1.Text, txtFlash2.Text);
-            }
+            timer.Interval = trackBarFlash.Value * 100;
+            Stuff.Serial.DisplayFlashMessage(txtFlash1.Text, txtFlash2.Text);
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Stuff.Serial.DisplayClearScreen();
+            Stuff.Serial.Disconnect();
         }
 
     }
