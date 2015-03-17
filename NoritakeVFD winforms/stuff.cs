@@ -4,37 +4,74 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NoritakeVFD_winforms
 {
     class Stuff
     {
+        public enum Display
+        {
+            Line1 = 0x31,
+            Line2 = 0x32,
+            Line3 = 0x33,
+            Line4 = 0x34
+        };
+
+        public static List<byte[]> charsets = new List<byte[]>
+        {
+            new byte [] { 0x1B, 0x52, 0x00 },
+            new byte [] { 0x1B, 0x52, 0x01 },
+            new byte [] { 0x1B, 0x52, 0x02 },
+            new byte [] { 0x1B, 0x52, 0x03 },
+            new byte [] { 0x1B, 0x52, 0x04 },
+            new byte [] { 0x1B, 0x52, 0x05 },
+            new byte [] { 0x1B, 0x52, 0x06 },
+            new byte [] { 0x1B, 0x52, 0x07 },
+            new byte [] { 0x1B, 0x52, 0x08 },
+            new byte [] { 0x1B, 0x52, 0x09 },
+            new byte [] { 0x1B, 0x52, 0x0A },
+            new byte [] { 0x1B, 0x52, 0x0B },
+            new byte [] { 0x1B, 0x52, 0x0C },
+            new byte [] { 0x1B, 0x52, 0x30 },
+            new byte [] { 0x1B, 0x52, 0x31 },
+            new byte [] { 0x1B, 0x52, 0x32 },
+            new byte [] { 0x1B, 0x52, 0x33 },
+            new byte [] { 0x1B, 0x52, 0x35 },
+            new byte [] { 0x1B, 0x52, 0x37 },
+            new byte [] { 0x1B, 0x52, 0x36 },
+            new byte [] { 0x1B, 0x52, 0x38 },
+            new byte [] { 0x1B, 0x52, 0x63 }
+        };
+
         public static byte left = 0, right = 0;
         public static int cursorPosition = 0;
         static bool flag = true;
 
-        //converts the cursor position in dec ascii format, based on the textbox's length. 
-        //example: 1 = 49 / 15 = 49, 53
+        /// <summary>
+        /// converts the cursor position in dec ascii format, based on the textbox's contents. 
+        /// example: 1 = 49       15 = 49, 53
+        /// </summary>
         public static void CurPos2Hex(int curPos)
         {
             int left = 0, right = 0;
 
-            if (curPos < 10)    //if the length is less than 9...
+            if (curPos < 10)                    //if the value is less than 9...
             {
-                left = curPos + 49; //...convert it to ascii 
-                if (left == 58)     //if the position is 9, the ascii equivalent isn't 0 but ':'
+                left = curPos + 49;             //...just convert it to ascii 
+                if (left == 58)                 //if the position is 9, the ascii equivalent isn't 0 but ':'
                 {
-                    left = 49;      //time to fix that 
+                    left = 49;                  //time to fix that, and make the values '1''0'.
                     right = 48;
                 }
             }
-            else if (curPos > 9 && curPos < 20)
+            else if (curPos > 9 && curPos < 20) //if the value is between 10 and 19
             {
-                left = 49;
-                right = (curPos % 10) + 49;
-                if (right == 58)
+                left = 49;                      //one element remains stable
+                right = (curPos % 10) + 49;     //while the other one is easily calculable
+                if (right == 58)                //if the value tries to become '1'':' ...
                 {
-                    left = 50;
+                    left = 50;                  //...make it '2''0' instead!
                     right = 48;
                 }
             }
@@ -42,7 +79,6 @@ namespace NoritakeVFD_winforms
             {
                 left = 50;
                 right = 48;
-
             }
 
             Stuff.left = (byte)left;
@@ -55,33 +91,6 @@ namespace NoritakeVFD_winforms
             public static bool connected = false;
             public static SerialPort uart = new SerialPort();
             public static System.Collections.ArrayList portlist = new System.Collections.ArrayList();
-
-            public static List<byte[]> charsets = new List<byte[]>
-            {
-                new byte [] { 0x1B, 0x52, 0x00 },
-                new byte [] { 0x1B, 0x52, 0x01 },
-                new byte [] { 0x1B, 0x52, 0x02 },
-                new byte [] { 0x1B, 0x52, 0x03 },
-                new byte [] { 0x1B, 0x52, 0x04 },
-                new byte [] { 0x1B, 0x52, 0x05 },
-                new byte [] { 0x1B, 0x52, 0x06 },
-                new byte [] { 0x1B, 0x52, 0x07 },
-                new byte [] { 0x1B, 0x52, 0x08 },
-                new byte [] { 0x1B, 0x52, 0x09 },
-                new byte [] { 0x1B, 0x52, 0x0A },
-                new byte [] { 0x1B, 0x52, 0x0B },
-                new byte [] { 0x1B, 0x52, 0x0C },
-                new byte [] { 0x1B, 0x52, 0x30 },
-                new byte [] { 0x1B, 0x52, 0x31 },
-                new byte [] { 0x1B, 0x52, 0x32 },
-                new byte [] { 0x1B, 0x52, 0x33 },
-                new byte [] { 0x1B, 0x52, 0x35 },
-                new byte [] { 0x1B, 0x52, 0x37 },
-                new byte [] { 0x1B, 0x52, 0x36 },
-                new byte [] { 0x1B, 0x52, 0x38 },
-                new byte [] { 0x1B, 0x52, 0x63 }
-            };
-
 
             public static void GetPorts()
             {
@@ -121,6 +130,15 @@ namespace NoritakeVFD_winforms
                 connected = false;
             }
 
+            /// <summary>
+            /// This command deletes the characters from the cursor, cursor position included, to the end of the line. 
+            /// The position of the cursor remains unchanged.
+            /// </summary>
+            public static void DisplayDeleteToEndOfLine()
+            {
+                byte[] command = new byte[4] { 0x1B, 0x5B, 0x30, 0x4B };
+                uart.Write(command, 0, 4);
+            }
             public static void DisplayBackspace()
             {
                 byte[] command = new byte[1] { 0x08 };
@@ -135,6 +153,12 @@ namespace NoritakeVFD_winforms
                     uart.Write(" ");
                     uart.Write(command, 0, 1);
                 }
+            }
+            public static void DisplayBackspaceNoDelete()
+            {
+                byte[] command = new byte[1] { 0x08 };
+
+                uart.Write(command, 0, 1);
             }
             public static void DisplaySetCurPos(byte line, byte col)
             {
@@ -171,11 +195,50 @@ namespace NoritakeVFD_winforms
 
                 Form1.form1.textBox2.Focus();
             }
-            /// <param name="spaces">Number of " " between messages.</param>
-            /// <param name="direction">true for left to right, false for the opposite.</param>
-            public static void DisplayScrollMessage(int spaces, bool direction, string Line1Message, string Line2Message)
+            /// <param name="spaces">Number of spaces between messages.</param>
+            /// <param name="direction">true for right to left, false for the opposite.</param>
+            public static void DisplayScrollMessageR2L(int spaces, string Line1Message, string Line2Message)
             {
+                for (int i = 20; i > -1; i--)
+                {
+                    CurPos2Hex(i);
 
+                    if (right == 0)
+                    {
+                        DisplaySetCurPos((byte)Display.Line1, left); 
+                    }
+                    else
+                    {
+                        DisplaySetCurPos((byte)Display.Line1, left, right);
+                    }
+
+                    if (i == 0)       //if the cursor is in column 1, start not sending the string's first letters
+                    {
+                        for (int j = 0; j < Line1Message.Length; j++)
+                        {
+                            uart.Write(Line1Message.Substring(j));
+                            DisplayDeleteToEndOfLine();
+                            DisplaySetCursorToLine1();
+                        }
+                    }
+                    else
+                    {
+                        uart.Write(Line1Message);
+                    }
+                    if (i < Line1Message.Length)
+                    {
+                        DisplayDeleteToEndOfLine();
+                    }
+
+                    Application.DoEvents();
+
+                }
+            }
+            public static void DisplayScrollMessageL2R(int spaces, string Line1Message, string Line2Message)  //left to right ->
+            {
+                //DisplaySetCurPos((byte)Display.Line2, left, right); //set cursor to the display's last char space
+                //uart.Write(Line2Message);
+                //DisplayDeleteToEndOfLine();
             }
             /// <param name="message">Include the spaces in the string plox.</param>
             public static void DisplayFlashMessage(string message)
@@ -200,7 +263,7 @@ namespace NoritakeVFD_winforms
                     uart.Write(Line1Message);
                     DisplaySetCursorToLine2();
                     uart.Write(Line2Message);
-                    
+
                     flag = !flag;
                 }
                 else
@@ -211,5 +274,6 @@ namespace NoritakeVFD_winforms
                 }
             }
         }
+
     }
 }

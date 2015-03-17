@@ -58,7 +58,7 @@ namespace NoritakeVFD_winforms
                 Stuff.Serial.DisplayBackspace();
             }
             //if you write more than 20 chars on the display, the cursor stays in the last place and updates the last char, 
-            //even if it can't be written in the textBox.
+            //even if it can't be written in the textBox. Let's fix that.
             else if (textBox1.Text.Length == 20)
             {
                 Stuff.Serial.uart.Write("");
@@ -92,11 +92,11 @@ namespace NoritakeVFD_winforms
             Stuff.CurPos2Hex(textBox1.SelectionStart);
             if (Stuff.right == 0)
             {
-                Stuff.Serial.DisplaySetCurPos(0x31, Stuff.left);
+                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line1, Stuff.left);
             }
             else
             {
-                Stuff.Serial.DisplaySetCurPos(0x31, Stuff.left, Stuff.right);
+                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line1, Stuff.left, Stuff.right);
             }
         }
         private void textBox2_Click(object sender, EventArgs e)
@@ -104,11 +104,11 @@ namespace NoritakeVFD_winforms
             Stuff.CurPos2Hex(textBox2.SelectionStart);
             if (Stuff.right == 0)
             {
-                Stuff.Serial.DisplaySetCurPos(0x32, Stuff.left);
+                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line2, Stuff.left);
             }
             else
             {
-                Stuff.Serial.DisplaySetCurPos(0x32, Stuff.left, Stuff.right);
+                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line2, Stuff.left, Stuff.right);
             }
         }
 
@@ -127,7 +127,7 @@ namespace NoritakeVFD_winforms
 
         private void cboxCharset_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Stuff.Serial.uart.Write(Stuff.Serial.charsets[cboxCharset.SelectedIndex], 0, 3);
+            Stuff.Serial.uart.Write(Stuff.charsets[cboxCharset.SelectedIndex], 0, 3);
         }
 
         private void radioMainMode_CheckedChanged(object sender, EventArgs e)
@@ -149,16 +149,16 @@ namespace NoritakeVFD_winforms
             panelFlashingMessage.Visible = false;
         }
 
-        private void btnFlashing_CheckedChanged(object sender, EventArgs e) //FLASH
+        private void btnFlash_CheckedChanged(object sender, EventArgs e) //FLASH
         {
-            if (btnFlashing.Checked)
+            if (btnFlash.Checked)
             {
                 if (string.IsNullOrWhiteSpace(txtFlash1.Text) && string.IsNullOrWhiteSpace(txtFlash2.Text)) //check if there's text first
                 {
-                    btnFlashing.Checked = false;
+                    btnFlash.Checked = false;
                     MessageBox.Show("Some text would help.");
                 }
-                btnFlashing.Text = "Stop";                
+                btnFlash.Text = "Stop";                
                 timer.Enabled = true;
                 timer.Interval = trackBarFlash.Value * 100;                
                 timer.Start();
@@ -169,19 +169,20 @@ namespace NoritakeVFD_winforms
                 timer.Enabled = false;
 
                 Stuff.Serial.DisplayClearScreen();
-                btnFlashing.Text = "Start";                
+                btnFlash.Text = "Start";                
             }
         }
-        private void btnScrolling_CheckedChanged(object sender, EventArgs e)  //SCROLL
+        private void btnScroll_CheckedChanged(object sender, EventArgs e)  //SCROLL
         {
-            if (btnScrolling.Checked)
+            if (btnScroll.Checked)
             {
-                if (string.IsNullOrWhiteSpace(txtFlash1.Text) && string.IsNullOrWhiteSpace(txtFlash2.Text)) //check if there's text first
+                if (string.IsNullOrWhiteSpace(txtScroll1.Text) && string.IsNullOrWhiteSpace(txtScroll2.Text)) //check if there's text first
                 {
-                    btnFlashing.Checked = false;
+                    btnFlash.Checked = false;
                     MessageBox.Show("Some text would help.");
                 }
-                btnFlashing.Text = "Stop";                
+                btnScroll.Text = "Stop";
+
                 timer.Enabled = true;
                 timer.Interval = trackBarScroll.Value * 100;
                 timer.Start();
@@ -192,18 +193,25 @@ namespace NoritakeVFD_winforms
                 timer.Enabled = false;
 
                 Stuff.Serial.DisplayClearScreen();
-                btnFlashing.Text = "Start";                
+                btnScroll.Text = "Start";                
             }
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (btnScrolling.Checked)
+            if (btnScroll.Checked)
             {
-                timer.Interval = trackBarScroll.Value * 100;
-                Stuff.Serial.DisplayScrollMessage(2, true, txtScroll1.Text, null);
+                timer.Interval = trackBarScroll.Value * 500;
+                if (radioRight2Left.Checked)
+                {
+                    Stuff.Serial.DisplayScrollMessageR2L(2, txtScroll1.Text, txtScroll2.Text);
+                }
+                else if(radioLeft2Right.Checked)
+                {
+                    Stuff.Serial.DisplayScrollMessageL2R(2, txtScroll1.Text, txtScroll2.Text);
+                }
             }
-            else if (btnFlashing.Checked)
+            else if (btnFlash.Checked)
             {
                 timer.Interval = trackBarFlash.Value * 100;
                 Stuff.Serial.DisplayFlashMessage(txtFlash1.Text, txtFlash2.Text);
