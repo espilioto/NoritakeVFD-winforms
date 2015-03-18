@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,43 +11,9 @@ namespace NoritakeVFD_winforms
 {
     class Stuff
     {
-        public enum Display
-        {
-            Line1 = 0x31,
-            Line2 = 0x32,
-            Line3 = 0x33,
-            Line4 = 0x34
-        };
-
-        public static List<byte[]> charsets = new List<byte[]>
-        {
-            new byte [] { 0x1B, 0x52, 0x00 },
-            new byte [] { 0x1B, 0x52, 0x01 },
-            new byte [] { 0x1B, 0x52, 0x02 },
-            new byte [] { 0x1B, 0x52, 0x03 },
-            new byte [] { 0x1B, 0x52, 0x04 },
-            new byte [] { 0x1B, 0x52, 0x05 },
-            new byte [] { 0x1B, 0x52, 0x06 },
-            new byte [] { 0x1B, 0x52, 0x07 },
-            new byte [] { 0x1B, 0x52, 0x08 },
-            new byte [] { 0x1B, 0x52, 0x09 },
-            new byte [] { 0x1B, 0x52, 0x0A },
-            new byte [] { 0x1B, 0x52, 0x0B },
-            new byte [] { 0x1B, 0x52, 0x0C },
-            new byte [] { 0x1B, 0x52, 0x30 },
-            new byte [] { 0x1B, 0x52, 0x31 },
-            new byte [] { 0x1B, 0x52, 0x32 },
-            new byte [] { 0x1B, 0x52, 0x33 },
-            new byte [] { 0x1B, 0x52, 0x35 },
-            new byte [] { 0x1B, 0x52, 0x37 },
-            new byte [] { 0x1B, 0x52, 0x36 },
-            new byte [] { 0x1B, 0x52, 0x38 },
-            new byte [] { 0x1B, 0x52, 0x63 }
-        };
-
         public static byte left = 0, right = 0;
         public static int cursorPosition = 0;
-        static bool flag = true;
+        public static bool printed = false, scrolling = false;
 
         /// <summary>
         /// converts the cursor position in dec ascii format, based on the textbox's contents. 
@@ -107,125 +74,183 @@ namespace NoritakeVFD_winforms
                 Form1.form1.openport.Text = "Close Port";
                 try
                 {
-                    uart.PortName = Form1.form1.portBox.Text;            //open port and send "ping"
-                    uart.BaudRate = int.Parse(Form1.form1.baudBox.Text);
-                    uart.Open();
+                    Serial.uart.PortName = Form1.form1.portBox.Text;            //open port and send "ping"
+                    Serial.uart.BaudRate = int.Parse(Form1.form1.baudBox.Text);
+                    Serial.uart.Open();
 
                     Form1.form1.openport.BackColor = System.Drawing.Color.LightGreen;
                 }
 
                 catch (System.Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show(ex.Message + '\n' + "Is the display connected in port " + uart.PortName + "?");
+                    System.Windows.Forms.MessageBox.Show(ex.Message + '\n' + "Is the display connected in port " + Serial.uart.PortName + "?");
                 }
             }
 
             public static void Disconnect()
             {
-                uart.Close();
+                Serial.uart.Close();
                 Form1.form1.openport.BackColor = System.Drawing.Color.Transparent;
                 Form1.form1.portBox.Enabled = true;
                 Form1.form1.baudBox.Enabled = true;
                 Form1.form1.openport.Text = "Connect";
                 connected = false;
             }
+        }
+
+        public class Display
+        {
+
+            public static List<byte[]> charsets = new List<byte[]>
+            {
+                new byte [] { 0x1B, 0x52, 0x00 },
+                new byte [] { 0x1B, 0x52, 0x01 },
+                new byte [] { 0x1B, 0x52, 0x02 },
+                new byte [] { 0x1B, 0x52, 0x03 },
+                new byte [] { 0x1B, 0x52, 0x04 },
+                new byte [] { 0x1B, 0x52, 0x05 },
+                new byte [] { 0x1B, 0x52, 0x06 },
+                new byte [] { 0x1B, 0x52, 0x07 },
+                new byte [] { 0x1B, 0x52, 0x08 },
+                new byte [] { 0x1B, 0x52, 0x09 },
+                new byte [] { 0x1B, 0x52, 0x0A },
+                new byte [] { 0x1B, 0x52, 0x0B },
+                new byte [] { 0x1B, 0x52, 0x0C },
+                new byte [] { 0x1B, 0x52, 0x30 },
+                new byte [] { 0x1B, 0x52, 0x31 },
+                new byte [] { 0x1B, 0x52, 0x32 },
+                new byte [] { 0x1B, 0x52, 0x33 },
+                new byte [] { 0x1B, 0x52, 0x35 },
+                new byte [] { 0x1B, 0x52, 0x37 },
+                new byte [] { 0x1B, 0x52, 0x36 },
+                new byte [] { 0x1B, 0x52, 0x38 },
+                new byte [] { 0x1B, 0x52, 0x63 }
+            };
+
+            public enum Line : byte
+            {
+                one = 0x31,
+                two = 0x32,
+                three = 0x33,
+                four = 0x34
+            };
 
             /// <summary>
             /// This command deletes the characters from the cursor, cursor position included, to the end of the line. 
             /// The position of the cursor remains unchanged.
             /// </summary>
-            public static void DisplayDeleteToEndOfLine()
+            public static void DeleteToEndOfLine()
             {
                 byte[] command = new byte[4] { 0x1B, 0x5B, 0x30, 0x4B };
-                uart.Write(command, 0, 4);
+                Serial.uart.Write(command, 0, 4);
             }
-            public static void DisplayBackspace()
+            public static void Backspace()
             {
                 byte[] command = new byte[1] { 0x08 };
 
                 if (cursorPosition == 20)
                 {
-                    uart.Write(" ");
+                    Serial.uart.Write(" ");
                 }
                 else
                 {
-                    uart.Write(command, 0, 1);
-                    uart.Write(" ");
-                    uart.Write(command, 0, 1);
+                    Serial.uart.Write(command, 0, 1);
+                    Serial.uart.Write(" ");
+                    Serial.uart.Write(command, 0, 1);
                 }
             }
-            public static void DisplayBackspaceNoDelete()
+            public static void BackspaceNoDelete()
             {
                 byte[] command = new byte[1] { 0x08 };
 
-                uart.Write(command, 0, 1);
+                Serial.uart.Write(command, 0, 1);
             }
-            public static void DisplaySetCurPos(byte line, byte col)
+            public static void SetCurPos(byte line, byte col)
             {
                 byte[] command = new byte[6] { 0x1B, 0x5B, line, 0x3B, col, 0x48 }; //command: ESC[<line>;<column number>H
-                uart.Write(command, 0, 6);
+                Serial.uart.Write(command, 0, 6);
             }
-            public static void DisplaySetCurPos(byte line, byte colH, byte colL)
+            public static void SetCurPos(byte line, byte colH, byte colL)
             {
                 byte[] command = new byte[7] { 0x1B, 0x5B, line, 0x3B, colH, colL, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
-                uart.Write(command, 0, 7);
+                Serial.uart.Write(command, 0, 7);
             }
-            public static void DisplayClearScreen()
+            public static void ClearScreen()
             {
                 byte[] command = new byte[4] { 0x1B, 0x5B, 0x32, 0x4A };
-                uart.Write(command, 0, 4);
-                DisplaySetCursorToLine1();
+                Serial.uart.Write(command, 0, 4);
+                SetCursorToLine1();
 
                 Form1.form1.textBox1.Clear();
                 Form1.form1.textBox2.Clear();
 
                 Form1.form1.textBox1.Focus();
             }
-            public static void DisplaySetCursorToLine1()
+            public static void SetCursorToLine1()
             {
-                byte[] command = new byte[6] { 0x1B, 0x5B, 0x31, 0x3B, 0x31, 0x48 };
-                uart.Write(command, 0, 6);
+                byte[] command = new byte[6] { 0x1B, 0x5B, (byte)Line.one, 0x3B, 0x31, 0x48 };
+                Serial.uart.Write(command, 0, 6);
 
                 Form1.form1.textBox1.Focus();
             }
-            public static void DisplaySetCursorToLine2()
+            public static void SetCursorToLine2()
             {
-                byte[] command = new byte[6] { 0x1B, 0x5B, 0x32, 0x3B, 0x31, 0x48 };
-                uart.Write(command, 0, 6);
+                byte[] command = new byte[6] { 0x1B, 0x5B, (byte)Line.two, 0x3B, 0x31, 0x48 };
+                Serial.uart.Write(command, 0, 6);
 
                 Form1.form1.textBox2.Focus();
             }
 
             /// <param name="scrollSpeed">Set the character scrolling speed on the display in ms.</param>
             /// <param name="replaySpeed">Set the frequency that the message is replayed in ms.</param>
-            public static void DisplayScrollMessageR2L(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message)
-            {
-                for (int i = 20; i > -1; i--)
+            public static async void ScrollMessageR2L(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //right to left <-
+            {                                                                                   //must make it warp 
+                for (int i = 19; i > -1; i--)
                 {
+
+                    if (!scrolling)
+                    {
+                        break;
+                    }
+
                     CurPos2Hex(i);              //find the cursor's position.
 
                     if (right == 0)
                     {
-                        DisplaySetCurPos((byte)Display.Line1, left);    //if the position is 1 - 9, send only 1 byte.
+                        SetCurPos((byte)Display.Line.one, left);    //if the position is 1 - 9, send only 1 byte.
                     }
                     else
                     {
-                        DisplaySetCurPos((byte)Display.Line1, left, right); //if it's more than 9, send both digits tha represent the column number.
+                        SetCurPos((byte)Display.Line.one, left, right); //if it's more than 9, send both digits that represent the column number.
                     }
 
                     if (i == 0)       //if the cursor is in column 1, start not sending the string's first letters.
                     {
                         for (int j = 0; j < Line1Message.Length; j++)
                         {
-                            uart.Write(Line1Message.Substring(j));
-                            DisplayDeleteToEndOfLine();
-                            DisplaySetCursorToLine1();
-                            System.Threading.Thread.Sleep(scrollSpeed); //being a scrublord works
-                         
+                            Application.DoEvents();
+                            if (!scrolling)
+                            {
+                                break;
+                            }
+
+                            Serial.uart.Write(Line1Message.Substring(j));
+                            DeleteToEndOfLine();
+                            SetCursorToLine1();
+
+                            await Task.Delay(Form1.form1.trackBarScroll.Value * 25);
+
                             if (j == Line1Message.Length - 1) //if the last letter was sent, reset the loop.
                             {
+                                if (!scrolling)
+                                {
+                                    break;
+                                }
+
                                 i = 20;
-                                DisplayClearScreen();
+                                ClearScreen();
+
+                                await Task.Delay(replaySpeed);
                             }
                         }
                     }
@@ -233,62 +258,71 @@ namespace NoritakeVFD_winforms
                     {
                         if ((20 - i) <= Line1Message.Length) //if the substring is bigger than the string things blow up.
                         {
-                            uart.Write(Line1Message.Substring(0, 20 - i)); //send only the part of the string that will actually be displayed.
+                            Serial.uart.Write(Line1Message.Substring(0, 20 - i)); //send only the part of the string that will actually be displayed.
+
+                            if (!(string.IsNullOrWhiteSpace(Line2Message)) && ((20 - i) <= Line2Message.Length)) //LINE2 stuff
+                            {
+                                SetCurPos((byte)Display.Line.two, left, right);
+                                Serial.uart.Write(Line2Message.Substring(0, 20 - i));
+
+                            }
+
+                            Application.DoEvents();
+                            if (!scrolling)
+                            {
+                                break;
+                            }
                         }
                         else
                         {
-                            uart.Write(Line1Message);
+                            Application.DoEvents();
+                            Serial.uart.Write(Line1Message);
+                            Display.DeleteToEndOfLine();
+
+                            if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE2 stuff
+                            {
+                                SetCurPos((byte)Display.Line.two, left, right);
+                                Serial.uart.Write(Line2Message.Substring(0, 20 - i));
+                            }
+                            
+                            if ((20 - i) <= Line2Message.Length)
+                            {
+                                SetCurPos((byte)Display.Line.two, left, right);
+                                Serial.uart.Write(" ");
+                            }
                         }
                     }
 
                     if (i < Line1Message.Length)
                     {
-                        DisplayDeleteToEndOfLine();
+                        DeleteToEndOfLine();
                     }
 
-                    System.Threading.Thread.Sleep(scrollSpeed);
-
-                    Application.DoEvents();
-
+                    await Task.Delay(scrollSpeed);
                 }
+
             }
-            public static void DisplayScrollMessageL2R(int spaces, string Line1Message, string Line2Message)  //left to right ->
+            public static void ScrollMessageL2R(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //left to right ->
             {
                 //DisplaySetCurPos((byte)Display.Line2, left, right); //set cursor to the display's last char space
-                //uart.Write(Line2Message);
+                //Serial.uart.Write(Line2Message);
                 //DisplayDeleteToEndOfLine();
             }
-            /// <param name="message">Include the spaces in the string plox.</param>
-            public static void DisplayFlashMessage(string message)
+            public static void FlashMessage(string Line1Message, string Line2Message)
             {
-                if (flag)
+                if (!printed)
                 {
-                    uart.Write(message);
+                    Serial.uart.Write(Line1Message);
+                    SetCursorToLine2();
+                    Serial.uart.Write(Line2Message);
 
-                    flag = !flag;
+                    printed = !printed;
                 }
                 else
                 {
-                    DisplayClearScreen();
+                    ClearScreen();
 
-                    flag = !flag;
-                }
-            }
-            public static void DisplayFlashMessage(string Line1Message, string Line2Message)
-            {
-                if (flag)
-                {
-                    uart.Write(Line1Message);
-                    DisplaySetCursorToLine2();
-                    uart.Write(Line2Message);
-
-                    flag = !flag;
-                }
-                else
-                {
-                    DisplayClearScreen();
-
-                    flag = !flag;
+                    printed = !printed;
                 }
             }
         }

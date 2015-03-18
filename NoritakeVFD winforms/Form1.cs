@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -40,7 +41,7 @@ namespace NoritakeVFD_winforms
                 Stuff.Serial.uart.Parity = System.IO.Ports.Parity.Odd; //vfd controller specific
                 Stuff.Serial.Connect();
 
-                Stuff.Serial.DisplayClearScreen();
+                Stuff.Display.ClearScreen();
             }
             else
             {
@@ -55,7 +56,7 @@ namespace NoritakeVFD_winforms
 
             if (e.KeyChar == '\b')      //if backspace is pressed...
             {
-                Stuff.Serial.DisplayBackspace();
+                Stuff.Display.Backspace();
             }
             //if you write more than 20 chars on the display, the cursor stays in the last place and updates the last char, 
             //even if it can't be written in the textBox. Let's fix that.
@@ -74,7 +75,7 @@ namespace NoritakeVFD_winforms
 
             if (e.KeyChar == '\b')
             {
-                Stuff.Serial.DisplayBackspace();
+                Stuff.Display.Backspace();
             }
             else if (textBox2.Text.Length == 20)
             {
@@ -92,11 +93,11 @@ namespace NoritakeVFD_winforms
             Stuff.CurPos2Hex(textBox1.SelectionStart);
             if (Stuff.right == 0)
             {
-                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line1, Stuff.left);
+                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.one, Stuff.left);
             }
             else
             {
-                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line1, Stuff.left, Stuff.right);
+                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.one, Stuff.left, Stuff.right);
             }
         }
         private void textBox2_Click(object sender, EventArgs e)
@@ -104,30 +105,30 @@ namespace NoritakeVFD_winforms
             Stuff.CurPos2Hex(textBox2.SelectionStart);
             if (Stuff.right == 0)
             {
-                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line2, Stuff.left);
+                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.two, Stuff.left);
             }
             else
             {
-                Stuff.Serial.DisplaySetCurPos((byte)Stuff.Display.Line2, Stuff.left, Stuff.right);
+                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.two, Stuff.left, Stuff.right);
             }
         }
 
         private void btnResetCursor1_Click(object sender, EventArgs e)
         {
-            Stuff.Serial.DisplaySetCursorToLine1();
+            Stuff.Display.SetCursorToLine1();
         }
         private void btnResetCursor2_Click(object sender, EventArgs e)
         {
-            Stuff.Serial.DisplaySetCursorToLine2();
+            Stuff.Display.SetCursorToLine2();
         }
         private void btnClearScreen_Click(object sender, EventArgs e)
         {
-            Stuff.Serial.DisplayClearScreen();
+            Stuff.Display.ClearScreen();
         }
 
         private void cboxCharset_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Stuff.Serial.uart.Write(Stuff.charsets[cboxCharset.SelectedIndex], 0, 3);
+            Stuff.Serial.uart.Write(Stuff.Display.charsets[cboxCharset.SelectedIndex], 0, 3);
         }
 
         private void radioMainMode_CheckedChanged(object sender, EventArgs e)
@@ -168,7 +169,7 @@ namespace NoritakeVFD_winforms
                 timer.Stop();
                 timer.Enabled = false;
 
-                Stuff.Serial.DisplayClearScreen();
+                Stuff.Display.ClearScreen();
                 btnFlash.Text = "Start";
             }
         }
@@ -185,16 +186,21 @@ namespace NoritakeVFD_winforms
 
                 if (radioRight2Left.Checked)
                 {
-                    Stuff.Serial.DisplayScrollMessageR2L(150, 2000, txtScroll1.Text, txtScroll2.Text);
+                    Stuff.scrolling = true;
+                    Stuff.Display.ScrollMessageR2L(trackBarScroll.Value * 25, (int)ReplayDelay.Value * 1000, txtScroll1.Text, txtScroll2.Text);
                 }
                 else
                 {
-                    Stuff.Serial.DisplayScrollMessageL2R(0, txtScroll1.Text, txtScroll2.Text);
+                    Stuff.scrolling = true;
+                    Stuff.Display.ScrollMessageL2R(trackBarScroll.Value * 25, (int)ReplayDelay.Value * 1000, txtScroll1.Text, txtScroll2.Text);
                 }
+
             }
             else
             {
-                Stuff.Serial.DisplayClearScreen();
+                Stuff.scrolling = false;
+
+                Stuff.Display.ClearScreen();
                 btnScroll.Text = "Start";
             }
         }
@@ -202,12 +208,12 @@ namespace NoritakeVFD_winforms
         private void timer_Tick(object sender, EventArgs e)
         {
             timer.Interval = trackBarFlash.Value * 100;
-            Stuff.Serial.DisplayFlashMessage(txtFlash1.Text, txtFlash2.Text);
+            Stuff.Display.FlashMessage(txtFlash1.Text, txtFlash2.Text);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Stuff.Serial.DisplayClearScreen();
+            Stuff.Display.ClearScreen();
             Stuff.Serial.Disconnect();
         }
 
