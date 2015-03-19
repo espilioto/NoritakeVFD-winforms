@@ -90,27 +90,11 @@ namespace NoritakeVFD_winforms
 
         private void textBox1_Click(object sender, EventArgs e)
         {
-            Stuff.CurPos2Hex(textBox1.SelectionStart);
-            if (Stuff.right == 0)
-            {
-                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.one, Stuff.left);
-            }
-            else
-            {
-                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.one, Stuff.left, Stuff.right);
-            }
+            Stuff.Display.SetCurPos((byte)Stuff.Display.Line.one, textBox1.SelectionStart);
         }
         private void textBox2_Click(object sender, EventArgs e)
         {
-            Stuff.CurPos2Hex(textBox2.SelectionStart);
-            if (Stuff.right == 0)
-            {
-                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.two, Stuff.left);
-            }
-            else
-            {
-                Stuff.Display.SetCurPos((byte)Stuff.Display.Line.two, Stuff.left, Stuff.right);
-            }
+            Stuff.Display.SetCurPos((byte)Stuff.Display.Line.two, textBox1.SelectionStart);
         }
 
         private void btnResetCursor1_Click(object sender, EventArgs e)

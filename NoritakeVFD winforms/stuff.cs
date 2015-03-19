@@ -165,15 +165,21 @@ namespace NoritakeVFD_winforms
 
                 Serial.uart.Write(command, 0, 1);
             }
-            public static void SetCurPos(byte line, byte col)
+            public static void SetCurPos(byte line, int col)
             {
-                byte[] command = new byte[6] { 0x1B, 0x5B, line, 0x3B, col, 0x48 }; //command: ESC[<line>;<column number>H
-                Serial.uart.Write(command, 0, 6);
-            }
-            public static void SetCurPos(byte line, byte colH, byte colL)
-            {
-                byte[] command = new byte[7] { 0x1B, 0x5B, line, 0x3B, colH, colL, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
-                Serial.uart.Write(command, 0, 7);
+                CurPos2Hex(col);
+
+                byte[] command1 = new byte[6] { 0x1B, 0x5B, line, 0x3B, left, 0x48 }; //command: ESC[<line>;<column number>H
+                byte[] command2 = new byte[7] { 0x1B, 0x5B, line, 0x3B, left, right, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
+
+                if (right == 0)
+                {
+                    Serial.uart.Write(command1, 0, 6);
+                }
+                else
+                {
+                    Serial.uart.Write(command2, 0, 7);
+                }
             }
             public static void ClearScreen()
             {
@@ -213,16 +219,8 @@ namespace NoritakeVFD_winforms
                         break;
                     }
 
-                    CurPos2Hex(i);              //find the cursor's position.
-
-                    if (right == 0)
-                    {
-                        SetCurPos((byte)Display.Line.one, left);    //if the position is 1 - 9, send only 1 byte.
-                    }
-                    else
-                    {
-                        SetCurPos((byte)Display.Line.one, left, right); //if it's more than 9, send both digits that represent the column number.
-                    }
+                   SetCurPos((byte)Display.Line.one, i);    //if the position is 1 - 9, send only 1 byte.
+                   
 
                     if (i == 0)       //if the cursor is in column 1, start not sending the string's first letters.
                     {
@@ -262,9 +260,8 @@ namespace NoritakeVFD_winforms
 
                             if (!(string.IsNullOrWhiteSpace(Line2Message)) && ((20 - i) <= Line2Message.Length)) //LINE2 stuff
                             {
-                                SetCurPos((byte)Display.Line.two, left, right);
+                                SetCurPos((byte)Display.Line.two, i);
                                 Serial.uart.Write(Line2Message.Substring(0, 20 - i));
-
                             }
 
                             Application.DoEvents();
@@ -281,22 +278,22 @@ namespace NoritakeVFD_winforms
 
                             if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE2 stuff
                             {
-                                SetCurPos((byte)Display.Line.two, left, right);
+                                SetCurPos((byte)Display.Line.two, i);
                                 Serial.uart.Write(Line2Message.Substring(0, 20 - i));
                             }
-                            
+
                             if ((20 - i) <= Line2Message.Length)
                             {
-                                SetCurPos((byte)Display.Line.two, left, right);
+                                SetCurPos((byte)Display.Line.two, i);
                                 Serial.uart.Write(" ");
                             }
                         }
                     }
 
-                    if (i < Line1Message.Length)
-                    {
-                        DeleteToEndOfLine();
-                    }
+                    //if (i > Line1Message.Length)
+                    //{
+                    //    DeleteToEndOfLine();
+                    //}
 
                     await Task.Delay(scrollSpeed);
                 }
