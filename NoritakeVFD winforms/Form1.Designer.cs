@@ -53,6 +53,9 @@
             this.txtFlash1 = new System.Windows.Forms.TextBox();
             this.btnFlash = new System.Windows.Forms.CheckBox();
             this.panelScroll = new System.Windows.Forms.Panel();
+            this.ReplayDelay = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.radioLeft2Right = new System.Windows.Forms.RadioButton();
             this.radioRight2Left = new System.Windows.Forms.RadioButton();
             this.label3 = new System.Windows.Forms.Label();
@@ -62,16 +65,13 @@
             this.txtScroll1 = new System.Windows.Forms.TextBox();
             this.btnScroll = new System.Windows.Forms.CheckBox();
             this.timer = new System.Windows.Forms.Timer(this.components);
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.ReplayDelay = new System.Windows.Forms.NumericUpDown();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.baudBox)).BeginInit();
             this.panelFlashingMessage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarFlash)).BeginInit();
             this.panelScroll.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ReplayDelay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).BeginInit();
             this.SuspendLayout();
             // 
             // radioMainMode
@@ -412,6 +412,36 @@
             this.panelScroll.TabIndex = 98;
             this.panelScroll.Visible = false;
             // 
+            // ReplayDelay
+            // 
+            this.ReplayDelay.Location = new System.Drawing.Point(141, 183);
+            this.ReplayDelay.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.ReplayDelay.Name = "ReplayDelay";
+            this.ReplayDelay.Size = new System.Drawing.Size(42, 20);
+            this.ReplayDelay.TabIndex = 102;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(287, 108);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(79, 13);
+            this.label7.TabIndex = 101;
+            this.label7.Text = "Scrolling speed";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(25, 186);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(110, 13);
+            this.label6.TabIndex = 100;
+            this.label6.Text = "Delay between scrolls";
+            // 
             // radioLeft2Right
             // 
             this.radioLeft2Right.AutoSize = true;
@@ -469,7 +499,7 @@
             this.txtScroll2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtScroll2.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.txtScroll2.Location = new System.Drawing.Point(9, 61);
-            this.txtScroll2.MaxLength = 20;
+            this.txtScroll2.MaxLength = 100;
             this.txtScroll2.Name = "txtScroll2";
             this.txtScroll2.Size = new System.Drawing.Size(484, 43);
             this.txtScroll2.TabIndex = 93;
@@ -481,7 +511,7 @@
             this.txtScroll1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtScroll1.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.txtScroll1.Location = new System.Drawing.Point(9, 9);
-            this.txtScroll1.MaxLength = 20;
+            this.txtScroll1.MaxLength = 100;
             this.txtScroll1.Name = "txtScroll1";
             this.txtScroll1.Size = new System.Drawing.Size(484, 43);
             this.txtScroll1.TabIndex = 92;
@@ -504,41 +534,6 @@
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(25, 186);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(110, 13);
-            this.label6.TabIndex = 100;
-            this.label6.Text = "Delay between scrolls";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(287, 108);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(79, 13);
-            this.label7.TabIndex = 101;
-            this.label7.Text = "Scrolling speed";
-            // 
-            // ReplayDelay
-            // 
-            this.ReplayDelay.Location = new System.Drawing.Point(141, 183);
-            this.ReplayDelay.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.ReplayDelay.Name = "ReplayDelay";
-            this.ReplayDelay.Size = new System.Drawing.Size(42, 20);
-            this.ReplayDelay.TabIndex = 102;
-            this.ReplayDelay.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -549,9 +544,9 @@
             this.Controls.Add(this.radioScrollingMessage);
             this.Controls.Add(this.radioFlashingMessage);
             this.Controls.Add(this.radioMainMode);
-            this.Controls.Add(this.panelScroll);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelFlashingMessage);
+            this.Controls.Add(this.panelScroll);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -566,8 +561,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarFlash)).EndInit();
             this.panelScroll.ResumeLayout(false);
             this.panelScroll.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ReplayDelay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).EndInit();
             this.ResumeLayout(false);
 
         }

@@ -94,7 +94,7 @@ namespace NoritakeVFD_winforms
         }
         private void textBox2_Click(object sender, EventArgs e)
         {
-            Stuff.Display.SetCurPos((byte)Stuff.Display.Line.two, textBox1.SelectionStart);
+            Stuff.Display.SetCurPos((byte)Stuff.Display.Line.two, textBox2.SelectionStart);
         }
 
         private void btnResetCursor1_Click(object sender, EventArgs e)

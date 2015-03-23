@@ -165,6 +165,28 @@ namespace NoritakeVFD_winforms
 
                 Serial.uart.Write(command, 0, 1);
             }
+            /// <summary>
+            /// Set the cursor to the selected column without changing line.
+            /// </summary>
+            public static void SetCurPos(int col)
+            {
+                CurPos2Hex(col);
+
+                byte[] command1 = new byte[5] { 0x1B, 0x5B, 0x3B, left, 0x48 }; //command: ESC[<line>;<column number>H
+                byte[] command2 = new byte[6] { 0x1B, 0x5B, 0x3B, left, right, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
+
+                if (right == 0)
+                {
+                    Serial.uart.Write(command1, 0, 5);
+                }
+                else
+                {
+                    Serial.uart.Write(command2, 0, 6);
+                }
+            }
+            /// <summary>
+            /// Set the cursor to the selected line and column.
+            /// </summary>
             public static void SetCurPos(byte line, int col)
             {
                 CurPos2Hex(col);
@@ -192,6 +214,9 @@ namespace NoritakeVFD_winforms
 
                 Form1.form1.textBox1.Focus();
             }
+            /// <summary>
+            /// Set the cursor to line 1 column 1.
+            /// </summary>
             public static void SetCursorToLine1()
             {
                 byte[] command = new byte[6] { 0x1B, 0x5B, (byte)Line.one, 0x3B, 0x31, 0x48 };
@@ -199,6 +224,9 @@ namespace NoritakeVFD_winforms
 
                 Form1.form1.textBox1.Focus();
             }
+            /// <summary>
+            /// Set the cursor to line 2 column 1.
+            /// </summary>
             public static void SetCursorToLine2()
             {
                 byte[] command = new byte[6] { 0x1B, 0x5B, (byte)Line.two, 0x3B, 0x31, 0x48 };
@@ -206,105 +234,110 @@ namespace NoritakeVFD_winforms
 
                 Form1.form1.textBox2.Focus();
             }
-
+            /// <summary>
+            /// The LF command (hexadecimal 0A) moves the invisible cursor down a line
+            ///if it is positioned in one of the first three lines of the display. The column
+            ///position remains unchanged.
+            ///The position of the cursor remains unchanged if it is already in the last line.
+            ///The contents of the last line are copied to the first line and the last line is
+            ///deleted.
+            /// </summary>
+            public static void LineFeed()
+            {
+                byte[] command = new byte[1] { 0x0A };
+                Serial.uart.Write(command, 0, 1);
+            }
+            ///<summary>
+            /// Scroll a message from right to left.
+            ///</summary> 
             /// <param name="scrollSpeed">Set the character scrolling speed on the display in ms.</param>
             /// <param name="replaySpeed">Set the frequency that the message is replayed in ms.</param>
-            public static async void ScrollMessageR2L(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //right to left <-
-            {                                                                                   //must make it warp 
+            public static async void ScrollMessageR2L(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //right to left <- 
+            {
+                int line1len = 0, line2len = 0;
+
                 for (int i = 19; i > -1; i--)
                 {
-
                     if (!scrolling)
-                    {
                         break;
-                    }
 
-                   SetCurPos((byte)Display.Line.one, i);    //if the position is 1 - 9, send only 1 byte.
-                   
-
-                    if (i == 0)       //if the cursor is in column 1, start not sending the string's first letters.
+                    if (!(string.IsNullOrWhiteSpace(Line1Message))) //LINE 1
                     {
-                        for (int j = 0; j < Line1Message.Length; j++)
+                        if (line1len < Line1Message.Length) //how many chars to write if message is smaller than the display
+                            line1len++;
+
+                        SetCurPos((byte)Line.one, i);
+
+                        if (line1len < Line1Message.Length) //write only as many chars are able to be displayed
                         {
-                            Application.DoEvents();
-                            if (!scrolling)
-                            {
-                                break;
-                            }
-
-                            Serial.uart.Write(Line1Message.Substring(j));
-                            DeleteToEndOfLine();
-                            SetCursorToLine1();
-
-                            await Task.Delay(Form1.form1.trackBarScroll.Value * 25);
-
-                            if (j == Line1Message.Length - 1) //if the last letter was sent, reset the loop.
-                            {
-                                if (!scrolling)
-                                {
-                                    break;
-                                }
-
-                                i = 20;
-                                ClearScreen();
-
-                                await Task.Delay(replaySpeed);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if ((20 - i) <= Line1Message.Length) //if the substring is bigger than the string things blow up.
-                        {
-                            Serial.uart.Write(Line1Message.Substring(0, 20 - i)); //send only the part of the string that will actually be displayed.
-
-                            if (!(string.IsNullOrWhiteSpace(Line2Message)) && ((20 - i) <= Line2Message.Length)) //LINE2 stuff
-                            {
-                                SetCurPos((byte)Display.Line.two, i);
-                                Serial.uart.Write(Line2Message.Substring(0, 20 - i));
-                            }
-
-                            Application.DoEvents();
-                            if (!scrolling)
-                            {
-                                break;
-                            }
+                            Serial.uart.Write(Line1Message.Substring(0, line1len));
                         }
                         else
                         {
-                            Application.DoEvents();
-                            Serial.uart.Write(Line1Message);
-                            Display.DeleteToEndOfLine();
-
-                            if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE2 stuff
+                            if (Line1Message.Length > 20) //if its longer than the display
                             {
-                                SetCurPos((byte)Display.Line.two, i);
-                                Serial.uart.Write(Line2Message.Substring(0, 20 - i));
+                                Serial.uart.Write(Line1Message);
                             }
-
-                            if ((20 - i) <= Line2Message.Length)
+                            else
                             {
-                                SetCurPos((byte)Display.Line.two, i);
-                                Serial.uart.Write(" ");
+                                Serial.uart.Write(Line1Message);
+                                DeleteToEndOfLine();
                             }
                         }
                     }
 
-                    //if (i > Line1Message.Length)
-                    //{
-                    //    DeleteToEndOfLine();
-                    //}
+                    if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE 2
+                    {
+                        if (line2len < Line2Message.Length)
+                            line2len++;
+
+                        SetCurPos((byte)Line.two, i);
+
+                        if (line2len < Line2Message.Length)
+                        {
+                            Serial.uart.Write(Line2Message.Substring(0, line2len));
+                        }
+                        else
+                        {
+                            if (Line2Message.Length > 20)
+                            {
+                                Serial.uart.Write(Line2Message);
+                            }
+                            else
+                            {
+                                Serial.uart.Write(Line2Message);
+                                DeleteToEndOfLine();
+                            }
+                        }
+                    }
+
+                    if (i == 0) //reset loop
+                    {
+                        line1len = 0;
+                        line2len = 0;
+                        i = 20;
+
+                        await Task.Delay(replaySpeed);
+                    }
 
                     await Task.Delay(scrollSpeed);
-                }
 
+                }
             }
+            ///<summary>
+            /// Scroll a message from left to right.
+            ///</summary> 
+            /// <param name="scrollSpeed">Set the character scrolling speed on the display in ms.</param>
+            /// <param name="replaySpeed">Set the frequency that the message is replayed in ms.</param>
             public static void ScrollMessageL2R(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //left to right ->
             {
-                //DisplaySetCurPos((byte)Display.Line2, left, right); //set cursor to the display's last char space
-                //Serial.uart.Write(Line2Message);
-                //DisplayDeleteToEndOfLine();
+                //TODO this 
             }
+            /// <summary>
+            /// Set a message that flashes at a set interval.
+            /// </summary>
+            /// <param name="Line1Message">Include spaces in message for -some- text formatting.</param>
+            /// <param name="Line2Message">Include spaces in message for -some- text formatting.</param>
             public static void FlashMessage(string Line1Message, string Line2Message)
             {
                 if (!printed)
