@@ -23,6 +23,8 @@ namespace NoritakeVFD_winforms
         private void Form1_Load(object sender, EventArgs e)
         {
             form1 = this;
+            
+            Stuff.Display.type = (int)Stuff.Display.Type.TwentyByFour; //set the display type 
 
             Stuff.Serial.GetPorts();
             foreach (var port in Stuff.Serial.portlist)
@@ -32,6 +34,7 @@ namespace NoritakeVFD_winforms
             portBox.SelectedIndex = 0;
 
             cboxCharset.SelectedIndex = 2;
+
         }
 
         private void openport_CheckedChanged(object sender, EventArgs e)
@@ -123,15 +126,15 @@ namespace NoritakeVFD_winforms
         }
         private void radioFlashingMessage_CheckedChanged(object sender, EventArgs e)
         {
-            panelFlashingMessage.Visible = true;
             panelMain.Visible = false;
+            panelFlashingMessage.Visible = true;
             panelScroll.Visible = false;
         }
         private void radioScrollingMessage_CheckedChanged(object sender, EventArgs e)
         {
-            panelScroll.Visible = true;
             panelMain.Visible = false;
             panelFlashingMessage.Visible = false;
+            panelScroll.Visible = true;
         }
 
         private void btnFlash_CheckedChanged(object sender, EventArgs e) //FLASH
@@ -199,6 +202,13 @@ namespace NoritakeVFD_winforms
         {
             Stuff.Display.ClearScreen();
             Stuff.Serial.Disconnect();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //byte[] com = new byte[] { 0xDB, 0xDC, 0xDD, 0xDE, 0xDF };
+            //Stuff.Serial.uart.Write(com, 0, com.Length);
+            Stuff.Display.Notify();
         }
 
     }

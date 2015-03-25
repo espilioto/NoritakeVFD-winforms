@@ -11,7 +11,7 @@ namespace NoritakeVFD_winforms
 {
     class Stuff
     {
-        public static byte left = 0, right = 0;
+        public static byte leftByte = 0, rightByte = 0;
         public static int cursorPosition = 0;
         public static bool printed = false, scrolling = false;
 
@@ -48,8 +48,8 @@ namespace NoritakeVFD_winforms
                 right = 48;
             }
 
-            Stuff.left = (byte)left;
-            Stuff.right = (byte)right;
+            Stuff.leftByte = (byte)left;
+            Stuff.rightByte = (byte)right;
             cursorPosition = curPos++;
         }
 
@@ -83,7 +83,7 @@ namespace NoritakeVFD_winforms
 
                 catch (System.Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show(ex.Message + '\n' + "Is the display connected in port " + Serial.uart.PortName + "?");
+                    System.Windows.Forms.MessageBox.Show(ex.Message + '\n' + "Is the display connected?");
                 }
             }
 
@@ -127,6 +127,13 @@ namespace NoritakeVFD_winforms
                 new byte [] { 0x1B, 0x52, 0x63 }
             };
 
+            public static int type = 0;
+            public enum Type
+            {
+                TwentyByTwo = 2,
+                TwentyByFour = 4
+            };
+
             public enum Line : byte
             {
                 one = 0x31,
@@ -144,6 +151,11 @@ namespace NoritakeVFD_winforms
                 byte[] command = new byte[4] { 0x1B, 0x5B, 0x30, 0x4B };
                 Serial.uart.Write(command, 0, 4);
             }
+            /// <summary>
+            /// The command moves the cursor one space to the left.
+            /// If there is a character in the position to which the cursor moves, it is deleted. 
+            /// This command is ignored if the cursor is already at the very start of the line.
+            /// </summary>
             public static void Backspace()
             {
                 byte[] command = new byte[1] { 0x08 };
@@ -159,6 +171,11 @@ namespace NoritakeVFD_winforms
                     Serial.uart.Write(command, 0, 1);
                 }
             }
+            /// <summary>
+            /// The BS command (hexadecimal 08) moves the cursor one space to the left.
+            /// If there is a character in the position to which the cursor moves, it is not
+            /// deleted. This command is ignored if the cursor is already at the very start of the line.
+            /// </summary>
             public static void BackspaceNoDelete()
             {
                 byte[] command = new byte[1] { 0x08 };
@@ -172,10 +189,10 @@ namespace NoritakeVFD_winforms
             {
                 CurPos2Hex(col);
 
-                byte[] command1 = new byte[5] { 0x1B, 0x5B, 0x3B, left, 0x48 }; //command: ESC[<line>;<column number>H
-                byte[] command2 = new byte[6] { 0x1B, 0x5B, 0x3B, left, right, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
+                byte[] command1 = new byte[5] { 0x1B, 0x5B, 0x3B, leftByte, 0x48 }; //command: ESC[<line>;<column number>H
+                byte[] command2 = new byte[6] { 0x1B, 0x5B, 0x3B, leftByte, rightByte, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
 
-                if (right == 0)
+                if (rightByte == 0)
                 {
                     Serial.uart.Write(command1, 0, 5);
                 }
@@ -191,10 +208,10 @@ namespace NoritakeVFD_winforms
             {
                 CurPos2Hex(col);
 
-                byte[] command1 = new byte[6] { 0x1B, 0x5B, line, 0x3B, left, 0x48 }; //command: ESC[<line>;<column number>H
-                byte[] command2 = new byte[7] { 0x1B, 0x5B, line, 0x3B, left, right, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
+                byte[] command1 = new byte[6] { 0x1B, 0x5B, line, 0x3B, leftByte, 0x48 }; //command: ESC[<line>;<column number>H
+                byte[] command2 = new byte[7] { 0x1B, 0x5B, line, 0x3B, leftByte, rightByte, 0x48 }; //command: ESC[<line>;<column number 1><column number 2>H
 
-                if (right == 0)
+                if (rightByte == 0)
                 {
                     Serial.uart.Write(command1, 0, 6);
                 }
@@ -203,6 +220,9 @@ namespace NoritakeVFD_winforms
                     Serial.uart.Write(command2, 0, 7);
                 }
             }
+            /// <summary>
+            /// Clears the entire display and sets the cursor to line 1 column 1.
+            /// </summary>
             public static void ClearScreen()
             {
                 byte[] command = new byte[4] { 0x1B, 0x5B, 0x32, 0x4A };
@@ -215,7 +235,7 @@ namespace NoritakeVFD_winforms
                 Form1.form1.textBox1.Focus();
             }
             /// <summary>
-            /// Set the cursor to line 1 column 1.
+            /// Sets the cursor to line 1 column 1.
             /// </summary>
             public static void SetCursorToLine1()
             {
@@ -225,7 +245,7 @@ namespace NoritakeVFD_winforms
                 Form1.form1.textBox1.Focus();
             }
             /// <summary>
-            /// Set the cursor to line 2 column 1.
+            /// Sets the cursor to line 2 column 1.
             /// </summary>
             public static void SetCursorToLine2()
             {
@@ -235,12 +255,32 @@ namespace NoritakeVFD_winforms
                 Form1.form1.textBox2.Focus();
             }
             /// <summary>
+            /// Sets the cursor to line 3 column 1.
+            /// </summary>
+            public static void SetCursorToLine3()
+            {
+                byte[] command = new byte[6] { 0x1B, 0x5B, (byte)Line.three, 0x3B, 0x31, 0x48 };
+                Serial.uart.Write(command, 0, 6);
+
+                Form1.form1.textBox2.Focus();
+            }
+            /// <summary>
+            /// Sets the cursor to line 4 column 1.
+            /// </summary>
+            public static void SetCursorToLine4()
+            {
+                byte[] command = new byte[6] { 0x1B, 0x5B, (byte)Line.four, 0x3B, 0x31, 0x48 };
+                Serial.uart.Write(command, 0, 6);
+
+                Form1.form1.textBox2.Focus();
+            }
+            /// <summary>
             /// The LF command (hexadecimal 0A) moves the invisible cursor down a line
-            ///if it is positioned in one of the first three lines of the display. The column
-            ///position remains unchanged.
-            ///The position of the cursor remains unchanged if it is already in the last line.
-            ///The contents of the last line are copied to the first line and the last line is
-            ///deleted.
+            /// if it is positioned in one of the first three lines of the display. The column
+            /// position remains unchanged.
+            /// The position of the cursor remains unchanged if it is already in the last line.
+            /// The contents of the last line are copied to the first line and the last line is
+            /// deleted.
             /// </summary>
             public static void LineFeed()
             {
@@ -254,9 +294,10 @@ namespace NoritakeVFD_winforms
             /// <param name="replaySpeed">Set the frequency that the message is replayed in ms.</param>
             public static async void ScrollMessageR2L(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //right to left <- 
             {
+                bool done = false;
                 int line1len = 0, line2len = 0;
 
-                for (int i = 19; i > -1; i--)
+                for (int i = 19; i > -2; i--)
                 {
                     if (!scrolling)
                         break;
@@ -278,6 +319,18 @@ namespace NoritakeVFD_winforms
                             {
                                 Serial.uart.Write(Line1Message);
                             }
+                            //else if (i == -1) // when the message finally reaches the first column start omitting chars
+                            //{
+                            //    for (int j = 1; j < (Line1Message.Length + 1); j++)
+                            //    {
+                            //        SetCursorToLine1();
+                            //        Serial.uart.Write(Line1Message.Substring(j));
+                            //        DeleteToEndOfLine();
+                            //        await Task.Delay(scrollSpeed);
+                            //    }
+
+                            //    done = true;
+                            //}
                             else
                             {
                                 Serial.uart.Write(Line1Message);
@@ -303,6 +356,18 @@ namespace NoritakeVFD_winforms
                             {
                                 Serial.uart.Write(Line2Message);
                             }
+                            //else if (i == -1) // when the message finally reaches the first column start omitting chars
+                            //{
+                            //    for (int j = 1; j < (Line2Message.Length + 1); j++)
+                            //    {
+                            //        SetCursorToLine2();
+                            //        Serial.uart.Write(Line2Message.Substring(j));
+                            //        DeleteToEndOfLine();
+                            //        await Task.Delay(scrollSpeed);
+                            //    }
+
+                            //    done = true;
+                            //}
                             else
                             {
                                 Serial.uart.Write(Line2Message);
@@ -311,11 +376,41 @@ namespace NoritakeVFD_winforms
                         }
                     }
 
-                    if (i == 0) //reset loop
+                    if (i == -1) // when the message finally reaches the first column start omitting chars
+                    {
+                        for (int j = 1; j < (Math.Max(Line1Message.Length, Line2Message.Length) + 1); j++)
+                        {
+                            if (!(string.IsNullOrWhiteSpace(Line1Message)))
+                            {
+                                if (j <= Line1Message.Length)
+                                {
+                                    SetCursorToLine1();
+                                    Serial.uart.Write(Line1Message.Substring(j));
+                                    DeleteToEndOfLine();
+                                }
+                            }
+
+                            if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE 2
+                            {
+                                if (j <= Line2Message.Length)
+                                {
+                                    SetCursorToLine2();
+                                    Serial.uart.Write(Line2Message.Substring(j));
+                                    DeleteToEndOfLine();
+                                }
+                            }
+
+                            await Task.Delay(scrollSpeed);
+                        }
+                        done = true;
+                    }
+
+                    if (done) // reset the loop
                     {
                         line1len = 0;
                         line2len = 0;
                         i = 20;
+                        done = !done;
 
                         await Task.Delay(replaySpeed);
                     }
@@ -355,7 +450,51 @@ namespace NoritakeVFD_winforms
                     printed = !printed;
                 }
             }
+            /// <summary>
+            /// Flashes all the pixels on and off quickly to get the user's attention.
+            /// </summary>
+            public static void Notify()
+            {
+                byte[] com = new byte[1] { 0xDB };
+
+                SetCursorToLine1();
+                for (int i = 0; i < 20; i++)
+                    Serial.uart.Write(com, 0, 1);
+
+                SetCursorToLine2();
+                for (int i = 0; i < 20; i++)
+                    Serial.uart.Write(com, 0, 1);
+
+                if (type == (int)Display.Type.TwentyByFour)
+                {
+                    SetCursorToLine3();
+                    for (int i = 0; i < 20; i++)
+                        Serial.uart.Write(com, 0, 1);
+
+                    SetCursorToLine4();
+                    for (int i = 0; i < 20; i++)
+                        Serial.uart.Write(com, 0, 1);
+                }
+                Thread.Sleep(500);
+                ClearScreen();
+            }
         }
 
     }
 }
+/*
+ 
+ * TODOS
+ * 
+ * Option to send a notify before activating a mode or sending a message
+ * Select display type 20x2 / 20x4
+ * write 20x4 options in methods
+ *
+ * VUMeter 
+ * email notifications?
+ * 
+ * simple WMI stuff (wbemtest) like
+ * cpu util/ram util etc graphs? 
+ * 
+ 
+ */

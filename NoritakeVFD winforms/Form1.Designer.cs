@@ -32,9 +32,8 @@
             this.radioMainMode = new System.Windows.Forms.RadioButton();
             this.radioFlashingMessage = new System.Windows.Forms.RadioButton();
             this.radioScrollingMessage = new System.Windows.Forms.RadioButton();
-            this.radioButton4 = new System.Windows.Forms.RadioButton();
-            this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.cboxCharset = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -65,6 +64,7 @@
             this.txtScroll1 = new System.Windows.Forms.TextBox();
             this.btnScroll = new System.Windows.Forms.CheckBox();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.baudBox)).BeginInit();
             this.panelFlashingMessage.SuspendLayout();
@@ -82,7 +82,7 @@
             this.radioMainMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.radioMainMode.Location = new System.Drawing.Point(1, 3);
             this.radioMainMode.Name = "radioMainMode";
-            this.radioMainMode.Size = new System.Drawing.Size(100, 40);
+            this.radioMainMode.Size = new System.Drawing.Size(100, 50);
             this.radioMainMode.TabIndex = 71;
             this.radioMainMode.TabStop = true;
             this.radioMainMode.Text = "Main mode";
@@ -95,9 +95,9 @@
             this.radioFlashingMessage.Appearance = System.Windows.Forms.Appearance.Button;
             this.radioFlashingMessage.FlatAppearance.BorderSize = 3;
             this.radioFlashingMessage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioFlashingMessage.Location = new System.Drawing.Point(1, 46);
+            this.radioFlashingMessage.Location = new System.Drawing.Point(1, 58);
             this.radioFlashingMessage.Name = "radioFlashingMessage";
-            this.radioFlashingMessage.Size = new System.Drawing.Size(100, 40);
+            this.radioFlashingMessage.Size = new System.Drawing.Size(100, 50);
             this.radioFlashingMessage.TabIndex = 72;
             this.radioFlashingMessage.Text = "Flashing message";
             this.radioFlashingMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -109,43 +109,18 @@
             this.radioScrollingMessage.Appearance = System.Windows.Forms.Appearance.Button;
             this.radioScrollingMessage.FlatAppearance.BorderSize = 3;
             this.radioScrollingMessage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioScrollingMessage.Location = new System.Drawing.Point(1, 89);
+            this.radioScrollingMessage.Location = new System.Drawing.Point(1, 113);
             this.radioScrollingMessage.Name = "radioScrollingMessage";
-            this.radioScrollingMessage.Size = new System.Drawing.Size(100, 40);
+            this.radioScrollingMessage.Size = new System.Drawing.Size(100, 50);
             this.radioScrollingMessage.TabIndex = 73;
             this.radioScrollingMessage.Text = "Scrolling message";
             this.radioScrollingMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.radioScrollingMessage.UseVisualStyleBackColor = true;
             this.radioScrollingMessage.CheckedChanged += new System.EventHandler(this.radioScrollingMessage_CheckedChanged);
             // 
-            // radioButton4
-            // 
-            this.radioButton4.Appearance = System.Windows.Forms.Appearance.Button;
-            this.radioButton4.FlatAppearance.BorderSize = 3;
-            this.radioButton4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioButton4.Location = new System.Drawing.Point(1, 132);
-            this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(100, 40);
-            this.radioButton4.TabIndex = 74;
-            this.radioButton4.Text = "radioButton4";
-            this.radioButton4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.radioButton4.UseVisualStyleBackColor = true;
-            // 
-            // radioButton5
-            // 
-            this.radioButton5.Appearance = System.Windows.Forms.Appearance.Button;
-            this.radioButton5.FlatAppearance.BorderSize = 3;
-            this.radioButton5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioButton5.Location = new System.Drawing.Point(1, 175);
-            this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(100, 40);
-            this.radioButton5.TabIndex = 75;
-            this.radioButton5.Text = "radioButton5";
-            this.radioButton5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.radioButton5.UseVisualStyleBackColor = true;
-            // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.button4);
             this.panelMain.Controls.Add(this.label2);
             this.panelMain.Controls.Add(this.cboxCharset);
             this.panelMain.Controls.Add(this.button1);
@@ -160,6 +135,16 @@
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(500, 212);
             this.panelMain.TabIndex = 76;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(199, 153);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 97;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // label2
             // 
@@ -198,10 +183,10 @@
             "Charset Latin/Greek 2 (737)",
             "Charset Latin/Greek 2 (IBM813)",
             "Charset Latin/Katakana"});
-            this.cboxCharset.Location = new System.Drawing.Point(354, 117);
+            this.cboxCharset.Location = new System.Drawing.Point(335, 117);
             this.cboxCharset.MaxDropDownItems = 99;
             this.cboxCharset.Name = "cboxCharset";
-            this.cboxCharset.Size = new System.Drawing.Size(138, 21);
+            this.cboxCharset.Size = new System.Drawing.Size(157, 21);
             this.cboxCharset.TabIndex = 95;
             this.cboxCharset.SelectedIndexChanged += new System.EventHandler(this.cboxCharset_SelectedIndexChanged);
             // 
@@ -402,10 +387,10 @@
             this.panelScroll.Controls.Add(this.radioRight2Left);
             this.panelScroll.Controls.Add(this.label3);
             this.panelScroll.Controls.Add(this.label5);
-            this.panelScroll.Controls.Add(this.trackBarScroll);
             this.panelScroll.Controls.Add(this.txtScroll2);
             this.panelScroll.Controls.Add(this.txtScroll1);
             this.panelScroll.Controls.Add(this.btnScroll);
+            this.panelScroll.Controls.Add(this.trackBarScroll);
             this.panelScroll.Location = new System.Drawing.Point(103, 3);
             this.panelScroll.Name = "panelScroll";
             this.panelScroll.Size = new System.Drawing.Size(500, 212);
@@ -499,7 +484,7 @@
             this.txtScroll2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtScroll2.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.txtScroll2.Location = new System.Drawing.Point(9, 61);
-            this.txtScroll2.MaxLength = 100;
+            this.txtScroll2.MaxLength = 20;
             this.txtScroll2.Name = "txtScroll2";
             this.txtScroll2.Size = new System.Drawing.Size(484, 43);
             this.txtScroll2.TabIndex = 93;
@@ -511,7 +496,7 @@
             this.txtScroll1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtScroll1.Font = new System.Drawing.Font("Verdana", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.txtScroll1.Location = new System.Drawing.Point(9, 9);
-            this.txtScroll1.MaxLength = 100;
+            this.txtScroll1.MaxLength = 20;
             this.txtScroll1.Name = "txtScroll1";
             this.txtScroll1.Size = new System.Drawing.Size(484, 43);
             this.txtScroll1.TabIndex = 92;
@@ -534,13 +519,25 @@
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
+            // radioButton5
+            // 
+            this.radioButton5.Appearance = System.Windows.Forms.Appearance.Button;
+            this.radioButton5.FlatAppearance.BorderSize = 3;
+            this.radioButton5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.radioButton5.Location = new System.Drawing.Point(1, 168);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(100, 50);
+            this.radioButton5.TabIndex = 75;
+            this.radioButton5.Text = "radioButton5";
+            this.radioButton5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.radioButton5.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 218);
             this.Controls.Add(this.radioButton5);
-            this.Controls.Add(this.radioButton4);
             this.Controls.Add(this.radioScrollingMessage);
             this.Controls.Add(this.radioFlashingMessage);
             this.Controls.Add(this.radioMainMode);
@@ -572,8 +569,6 @@
         private System.Windows.Forms.RadioButton radioMainMode;
         private System.Windows.Forms.RadioButton radioFlashingMessage;
         private System.Windows.Forms.RadioButton radioScrollingMessage;
-        private System.Windows.Forms.RadioButton radioButton4;
-        private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cboxCharset;
@@ -605,6 +600,8 @@
         private System.Windows.Forms.NumericUpDown ReplayDelay;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.RadioButton radioButton5;
     }
 }
 
