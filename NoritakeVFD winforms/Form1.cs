@@ -23,7 +23,7 @@ namespace NoritakeVFD_winforms
         private void Form1_Load(object sender, EventArgs e)
         {
             form1 = this;
-            
+
             Stuff.Display.type = (int)Stuff.Display.Type.TwentyByFour; //set the display type 
 
             Stuff.Serial.GetPorts();
@@ -118,24 +118,36 @@ namespace NoritakeVFD_winforms
             Stuff.Serial.uart.Write(Stuff.Display.charsets[cboxCharset.SelectedIndex], 0, 3);
         }
 
+        #region radio buttons and panels
         private void radioMainMode_CheckedChanged(object sender, EventArgs e)
         {
             panelMain.Visible = true;
-            panelFlashingMessage.Visible = false;
+            panelFlash.Visible = false;
             panelScroll.Visible = false;
+            panelCpuRam.Visible = false;
         }
         private void radioFlashingMessage_CheckedChanged(object sender, EventArgs e)
         {
             panelMain.Visible = false;
-            panelFlashingMessage.Visible = true;
+            panelFlash.Visible = true;
             panelScroll.Visible = false;
+            panelCpuRam.Visible = false;
         }
         private void radioScrollingMessage_CheckedChanged(object sender, EventArgs e)
         {
             panelMain.Visible = false;
-            panelFlashingMessage.Visible = false;
+            panelFlash.Visible = false;
             panelScroll.Visible = true;
+            panelCpuRam.Visible = false;
         }
+        private void radioCpuRam_CheckedChanged(object sender, EventArgs e)
+        {
+            panelMain.Visible = false;
+            panelFlash.Visible = false;
+            panelScroll.Visible = false;
+            panelCpuRam.Visible = true;
+        }
+        #endregion
 
         private void btnFlash_CheckedChanged(object sender, EventArgs e) //FLASH
         {
@@ -181,7 +193,6 @@ namespace NoritakeVFD_winforms
                     Stuff.scrolling = true;
                     Stuff.Display.ScrollMessageL2R(trackBarScroll.Value * 25, (int)ReplayDelay.Value * 1000, txtScroll1.Text, txtScroll2.Text);
                 }
-
             }
             else
             {
@@ -191,20 +202,50 @@ namespace NoritakeVFD_winforms
                 btnScroll.Text = "Start";
             }
         }
+        private void btnCpuRam_CheckedChanged(object sender, EventArgs e)
+        {
+            if (btnCpuRam.Checked)
+            {
+                MessageBox.Show("Get out of here stalker.", "whacha lookin at nigguh");
+                btnCpuRam.Checked = false;
+            }
+            //if (btnCpuRam.Checked)
+            //{
+            //    btnCpuRam.Text = "Stop";
+            //    timer.Enabled = true;
+            //    timer.Interval = 100;
+            //    timer.Start();
+            //}
+            //else
+            //{
+            //    timer.Stop();
+            //    timer.Enabled = false;
+
+            //    Stuff.Display.ClearScreen();
+            //    btnCpuRam.Text = "Start";
+            //}
+        }
+
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            timer.Interval = trackBarFlash.Value * 100;
-            Stuff.Display.FlashMessage(txtFlash1.Text, txtFlash2.Text);
+            if (btnFlash.Checked)
+            {
+                timer.Interval = trackBarFlash.Value * 100;
+                Stuff.Display.FlashMessage(txtFlash1.Text, txtFlash2.Text);
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Stuff.Display.ClearScreen();
-            Stuff.Serial.Disconnect();
+            if (Stuff.Serial.uart.IsOpen)
+            {
+                Stuff.Display.ClearScreen();
+                Stuff.Serial.Disconnect();
+            }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e) //test stuff
         {
             //byte[] com = new byte[] { 0xDB, 0xDC, 0xDD, 0xDE, 0xDF };
             //Stuff.Serial.uart.Write(com, 0, com.Length);

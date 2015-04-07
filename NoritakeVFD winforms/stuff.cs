@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Diagnostics;
+using System.Management;
+using System.Management.Instrumentation;
 namespace NoritakeVFD_winforms
 {
     class Stuff
@@ -25,7 +27,7 @@ namespace NoritakeVFD_winforms
 
             if (curPos < 10)                    //if the value is less than 9...
             {
-                left = curPos + 49;             //...just convert it to ascii 
+                left = curPos + 48;             //...just convert it to ascii 
                 if (left == 58)                 //if the position is 9, the ascii equivalent isn't 0 but ':'
                 {
                     left = 49;                  //time to fix that, and make the values '1''0'.
@@ -35,7 +37,7 @@ namespace NoritakeVFD_winforms
             else if (curPos > 9 && curPos < 20) //if the value is between 10 and 19
             {
                 left = 49;                      //one element remains stable
-                right = (curPos % 10) + 49;     //while the other one is easily calculable
+                right = (curPos % 10) + 48;     //while the other one is easily calculable
                 if (right == 58)                //if the value tries to become '1'':' ...
                 {
                     left = 50;                  //...make it '2''0' instead!
@@ -152,6 +154,19 @@ namespace NoritakeVFD_winforms
                 Serial.uart.Write(command, 0, 4);
             }
             /// <summary>
+            /// This command deletes all characters from the first till the specified column number on the current line.
+            /// </summary>
+            /// <param name="col">Column number, starting from 1.</param>
+            public static void DeleteFromStartToColumn(int col)
+            {
+                SetCurPos(1);
+                for (int i = 0; i < col; i++)
+                {
+                    Serial.uart.Write(" ");
+                }
+
+            }
+            /// <summary>
             /// The command moves the cursor one space to the left.
             /// If there is a character in the position to which the cursor moves, it is deleted. 
             /// This command is ignored if the cursor is already at the very start of the line.
@@ -183,7 +198,7 @@ namespace NoritakeVFD_winforms
                 Serial.uart.Write(command, 0, 1);
             }
             /// <summary>
-            /// Set the cursor to the selected column without changing line.
+            /// Set the cursor to the selected column of the current line.
             /// </summary>
             public static void SetCurPos(int col)
             {
@@ -297,12 +312,14 @@ namespace NoritakeVFD_winforms
                 bool done = false;
                 int line1len = 0, line2len = 0;
 
-                for (int i = 19; i > -2; i--)
+                ClearScreen();
+
+                for (int i = 20; i > -1; i--)
                 {
                     if (!scrolling)
                         break;
 
-                    if (!(string.IsNullOrWhiteSpace(Line1Message))) //LINE 1
+                    if (!(string.IsNullOrWhiteSpace(Line1Message)) && i > 1) //LINE 1
                     {
                         if (line1len < Line1Message.Length) //how many chars to write if message is smaller than the display
                             line1len++;
@@ -319,18 +336,6 @@ namespace NoritakeVFD_winforms
                             {
                                 Serial.uart.Write(Line1Message);
                             }
-                            //else if (i == -1) // when the message finally reaches the first column start omitting chars
-                            //{
-                            //    for (int j = 1; j < (Line1Message.Length + 1); j++)
-                            //    {
-                            //        SetCursorToLine1();
-                            //        Serial.uart.Write(Line1Message.Substring(j));
-                            //        DeleteToEndOfLine();
-                            //        await Task.Delay(scrollSpeed);
-                            //    }
-
-                            //    done = true;
-                            //}
                             else
                             {
                                 Serial.uart.Write(Line1Message);
@@ -339,7 +344,7 @@ namespace NoritakeVFD_winforms
                         }
                     }
 
-                    if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE 2
+                    if (!(string.IsNullOrWhiteSpace(Line2Message)) && i > 1) //LINE 2
                     {
                         if (line2len < Line2Message.Length)
                             line2len++;
@@ -356,18 +361,6 @@ namespace NoritakeVFD_winforms
                             {
                                 Serial.uart.Write(Line2Message);
                             }
-                            //else if (i == -1) // when the message finally reaches the first column start omitting chars
-                            //{
-                            //    for (int j = 1; j < (Line2Message.Length + 1); j++)
-                            //    {
-                            //        SetCursorToLine2();
-                            //        Serial.uart.Write(Line2Message.Substring(j));
-                            //        DeleteToEndOfLine();
-                            //        await Task.Delay(scrollSpeed);
-                            //    }
-
-                            //    done = true;
-                            //}
                             else
                             {
                                 Serial.uart.Write(Line2Message);
@@ -376,18 +369,25 @@ namespace NoritakeVFD_winforms
                         }
                     }
 
-                    if (i == -1) // when the message finally reaches the first column start omitting chars
+                    if (i == 1) // when the message finally reaches the first column start omitting chars
                     {
-                        for (int j = 1; j < (Math.Max(Line1Message.Length, Line2Message.Length) + 1); j++)
+                        for (int j = 0; j < (Math.Max(Line1Message.Length, Line2Message.Length) + 1); j++) //count till the length of the longest string
                         {
-                            if (!(string.IsNullOrWhiteSpace(Line1Message)))
+                            if (!scrolling)
+                                break;
+
+                            if (!(string.IsNullOrWhiteSpace(Line1Message))) //LINE 1
                             {
                                 if (j <= Line1Message.Length)
                                 {
                                     SetCursorToLine1();
                                     Serial.uart.Write(Line1Message.Substring(j));
+                                }
+                                if ((j + 20) > Line1Message.Length)//if the string that was printed is shorter than the screen, delete the rest
+                                {
                                     DeleteToEndOfLine();
                                 }
+
                             }
 
                             if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE 2
@@ -396,6 +396,9 @@ namespace NoritakeVFD_winforms
                                 {
                                     SetCursorToLine2();
                                     Serial.uart.Write(Line2Message.Substring(j));
+                                }
+                                if ((j + 20) > Line2Message.Length)
+                                {
                                     DeleteToEndOfLine();
                                 }
                             }
@@ -409,7 +412,7 @@ namespace NoritakeVFD_winforms
                     {
                         line1len = 0;
                         line2len = 0;
-                        i = 20;
+                        i = 21;
                         done = !done;
 
                         await Task.Delay(replaySpeed);
@@ -424,9 +427,103 @@ namespace NoritakeVFD_winforms
             ///</summary> 
             /// <param name="scrollSpeed">Set the character scrolling speed on the display in ms.</param>
             /// <param name="replaySpeed">Set the frequency that the message is replayed in ms.</param>
-            public static void ScrollMessageL2R(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //left to right ->
+            public static async void ScrollMessageL2R(int scrollSpeed, int replaySpeed, string Line1Message, string Line2Message) //left to right ->
             {
-                //TODO this 
+                bool done = false;
+                int line1Len = Line1Message.Length, line2Len = Line2Message.Length;
+                int L1CursorPos = 1, L2CursorPos = 1;
+                ClearScreen();
+
+                for (int i = 1; i < 21; i++)
+                {
+                    if (!scrolling)
+                        break;
+
+                    if (line1Len <= Line1Message.Length)
+                    {
+                        line1Len--;
+                    }
+                    if (line2Len <= Line2Message.Length)
+                    {
+                        line2Len--;
+                    }
+
+                    if (i > Line1Message.Length)
+                    {
+                        SetCurPos(++L1CursorPos);
+                    }
+                    else
+                    {
+                        SetCurPos(1);
+                    }
+
+                    if (!(string.IsNullOrWhiteSpace(Line1Message))) //LINE 1
+                    {
+
+                        if (i > Line1Message.Length)
+                        {
+                            SetCurPos(++L1CursorPos);
+                        }
+                        else
+                        {
+                            SetCurPos(1);
+                        }
+
+                        if (line1Len < 0)
+                        {
+                            Serial.uart.Write(Line1Message);
+                            DeleteFromStartToColumn(L1CursorPos - 1);
+                        }
+                        else if (line1Len > (L1CursorPos + Line1Message.Length))
+                        {
+                            //Serial.uart.Write(Line1Message.Substring());
+                        }
+                        else
+                        {
+                            Serial.uart.Write(Line1Message.Substring(line1Len));
+                        }
+                    }
+
+                    if (!(string.IsNullOrWhiteSpace(Line2Message))) //LINE 2
+                    {
+
+                        if (i > Line2Message.Length)
+                        {
+                            SetCurPos(++L2CursorPos);
+                        }
+                        else
+                        {
+                            SetCurPos(1);
+                        }
+
+                        if (line2Len < 0)
+                        {
+                            Serial.uart.Write(Line2Message);
+                            DeleteFromStartToColumn(L2CursorPos - 1);
+                        }
+                        else if (line2Len > (L2CursorPos + Line2Message.Length))
+                        {
+                            //Serial.uart.Write(Line1Message.Substring());
+                        }
+                        else
+                        {
+                            Serial.uart.Write(Line2Message.Substring(line2Len));
+                        }
+                    }
+
+                    await Task.Delay(scrollSpeed);
+                }
+
+                //if (done) // reset the loop
+                //{
+                //    line1len = 0;
+                //    line2len = 0;
+                //    i = 21;
+                //    done = !done;
+
+                //    await Task.Delay(replaySpeed);
+                //}
+
             }
             /// <summary>
             /// Set a message that flashes at a set interval.
@@ -457,26 +554,32 @@ namespace NoritakeVFD_winforms
             {
                 byte[] com = new byte[1] { 0xDB };
 
-                SetCursorToLine1();
-                for (int i = 0; i < 20; i++)
-                    Serial.uart.Write(com, 0, 1);
-
-                SetCursorToLine2();
-                for (int i = 0; i < 20; i++)
-                    Serial.uart.Write(com, 0, 1);
-
-                if (type == (int)Display.Type.TwentyByFour)
+                for (int j = 0; j < 2; j++)
                 {
-                    SetCursorToLine3();
+                    SetCursorToLine1();
                     for (int i = 0; i < 20; i++)
                         Serial.uart.Write(com, 0, 1);
 
-                    SetCursorToLine4();
+                    SetCursorToLine2();
                     for (int i = 0; i < 20; i++)
                         Serial.uart.Write(com, 0, 1);
+
+                    Thread.Sleep(50);
+                    ClearScreen();
+
+                    if (type == (int)Display.Type.TwentyByFour)
+                    {
+                        SetCursorToLine3();
+                        for (int i = 0; i < 20; i++)
+                            Serial.uart.Write(com, 0, 1);
+
+                        SetCursorToLine4();
+                        for (int i = 0; i < 20; i++)
+                            Serial.uart.Write(com, 0, 1);
+                    }
+                    Thread.Sleep(50);
+                    ClearScreen();
                 }
-                Thread.Sleep(500);
-                ClearScreen();
             }
         }
 
@@ -486,15 +589,20 @@ namespace NoritakeVFD_winforms
  
  * TODOS
  * 
+ * L2R!
  * Option to send a notify before activating a mode or sending a message
+ * Repetition count for modes
  * Select display type 20x2 / 20x4
  * write 20x4 options in methods
  *
  * VUMeter 
+ * date/time
+ * 
  * email notifications?
  * 
- * simple WMI stuff (wbemtest) like
- * cpu util/ram util etc graphs? 
+ * simple WMI stuff (wbemtest) like              
+ * cpu util Win32_Processor / LoadPercentage  
+ * ram util etc graphs? 
  * 
  
  */
