@@ -24,7 +24,7 @@ For now the displays can show:
 
 * **Finish the new WPF GUI**
 * Finish implementing all scrolling modes
-* 2*20 or 4x20 display mode option
+* 2x20 or 4x20 display mode option
 
 Maybe:
 * VU Meter mode
