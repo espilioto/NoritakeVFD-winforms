@@ -9,7 +9,7 @@ Also you just can't beat that retro/steampunk look!
 ###Warning
 
 These displays use 5V logic level and 12V for power.
-If you try to use them with a USB to UART bridge or a 3.3V microcontroller like I did, it won't work because you need a logic level shifter such as the [MAX3232].
+If you try to use them with a USB to UART bridge or a 3.3V microcontroller like I did, it won't work because you need a logic level shifter such as the [MAX3232] in between.
 
 pinouts: [connector] and [jumpers].
 
