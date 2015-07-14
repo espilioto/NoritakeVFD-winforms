@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
-using System.Management;
-using System.Management.Instrumentation;
+using CoreAudioApi;
+
 namespace NoritakeVFD_winforms
 {
+
     class Stuff
     {
         public static byte leftByte = 0, rightByte = 0;
@@ -241,8 +240,14 @@ namespace NoritakeVFD_winforms
             public static void ClearScreen()
             {
                 byte[] command = new byte[4] { 0x1B, 0x5B, 0x32, 0x4A };
-                Serial.uart.Write(command, 0, 4);
-                SetCursorToLine1();
+                try
+                {
+                    Serial.uart.Write(command, 0, 4);
+                    SetCursorToLine1();
+                }
+                catch (Exception)
+                {                    
+                }
 
                 Form1.form1.textBox1.Clear();
                 Form1.form1.textBox2.Clear();
@@ -583,6 +588,23 @@ namespace NoritakeVFD_winforms
             }
         }
 
+        public class Audio
+        {
+            static MMDevice device;
+                   
+            public static void InitAudioStuff()
+            {
+                MMDeviceEnumerator DevEnum = new MMDeviceEnumerator();
+                device = DevEnum.GetDefaultAudioEndpoint(EDataFlow.eRender, ERole.eMultimedia);
+            }
+
+            public static void UpdateVUMeter(ProgressBar left, ProgressBar right)
+            {
+                left.Value = (int)(device.AudioMeterInformation.PeakValues[0] * 100);
+                right.Value = (int)(device.AudioMeterInformation.PeakValues[1] * 100);
+            }
+        }
+
     }
 }
 /*
@@ -598,11 +620,13 @@ namespace NoritakeVFD_winforms
  * VUMeter 
  * date/time
  * 
- * email notifications?
+ * email notifications? 
+ * HKEY_CURRENT_USER\Software\Microsoft\Windows\Curre ntVersion\UnreadMail\MessageCount
+ * detected accounts
+ * option: select corner on which the mail icon will appear
  * 
- * simple WMI stuff (wbemtest) like              
+ * openhardwaremonitor
  * cpu util Win32_Processor / LoadPercentage  
  * ram util etc graphs? 
  * 
- 
  */

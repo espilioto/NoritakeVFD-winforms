@@ -23,6 +23,7 @@ namespace NoritakeVFD_winforms
         private void Form1_Load(object sender, EventArgs e)
         {
             form1 = this;
+            Stuff.Audio.InitAudioStuff();
 
             Stuff.Display.type = (int)Stuff.Display.Type.TwentyByFour; //set the display type 
 
@@ -125,6 +126,7 @@ namespace NoritakeVFD_winforms
             panelFlash.Visible = false;
             panelScroll.Visible = false;
             panelCpuRam.Visible = false;
+            panelVUMeter.Visible = false;
         }
         private void radioFlashingMessage_CheckedChanged(object sender, EventArgs e)
         {
@@ -132,6 +134,7 @@ namespace NoritakeVFD_winforms
             panelFlash.Visible = true;
             panelScroll.Visible = false;
             panelCpuRam.Visible = false;
+            panelVUMeter.Visible = false;
         }
         private void radioScrollingMessage_CheckedChanged(object sender, EventArgs e)
         {
@@ -139,6 +142,7 @@ namespace NoritakeVFD_winforms
             panelFlash.Visible = false;
             panelScroll.Visible = true;
             panelCpuRam.Visible = false;
+            panelVUMeter.Visible = false;
         }
         private void radioCpuRam_CheckedChanged(object sender, EventArgs e)
         {
@@ -146,6 +150,15 @@ namespace NoritakeVFD_winforms
             panelFlash.Visible = false;
             panelScroll.Visible = false;
             panelCpuRam.Visible = true;
+            panelVUMeter.Visible = false;
+        }
+        private void radioVUMeter_CheckedChanged(object sender, EventArgs e)
+        {
+            panelMain.Visible = false;
+            panelFlash.Visible = false;
+            panelScroll.Visible = false;
+            panelCpuRam.Visible = false;
+            panelVUMeter.Visible = true;
         }
         #endregion
 
@@ -170,6 +183,25 @@ namespace NoritakeVFD_winforms
 
                 Stuff.Display.ClearScreen();
                 btnFlash.Text = "Start";
+            }
+        }
+
+        private void btnVUMeter_CheckedChanged(object sender, EventArgs e)
+        {
+            if (btnVUMeter.Checked)
+            {
+                btnVUMeter.Text = "Stop";
+                timer.Enabled = true;
+                timer.Interval = 10;
+                timer.Start();
+            }
+            else
+            {
+                timer.Stop();
+                timer.Enabled = false;
+
+                Stuff.Display.ClearScreen();
+                btnVUMeter.Text = "Start";
             }
         }
         private void btnScroll_CheckedChanged(object sender, EventArgs e)  //SCROLL
@@ -233,6 +265,10 @@ namespace NoritakeVFD_winforms
             {
                 timer.Interval = trackBarFlash.Value * 100;
                 Stuff.Display.FlashMessage(txtFlash1.Text, txtFlash2.Text);
+            }
+            else if (btnVUMeter.Checked)
+            {
+                Stuff.Audio.UpdateVUMeter(progressLeft, progressRight);
             }
         }
 

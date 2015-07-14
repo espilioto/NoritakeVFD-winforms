@@ -45,9 +45,9 @@
             this.portBox = new System.Windows.Forms.ComboBox();
             this.baudBox = new System.Windows.Forms.NumericUpDown();
             this.panelFlash = new System.Windows.Forms.Panel();
+            this.trackBarFlash = new System.Windows.Forms.TrackBar();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.trackBarFlash = new System.Windows.Forms.TrackBar();
             this.txtFlash2 = new System.Windows.Forms.TextBox();
             this.txtFlash1 = new System.Windows.Forms.TextBox();
             this.btnFlash = new System.Windows.Forms.CheckBox();
@@ -72,6 +72,11 @@
             this.labelRam = new System.Windows.Forms.Label();
             this.labelCPU = new System.Windows.Forms.Label();
             this.btnCpuRam = new System.Windows.Forms.CheckBox();
+            this.radioVUMeter = new System.Windows.Forms.RadioButton();
+            this.panelVUMeter = new System.Windows.Forms.Panel();
+            this.progressRight = new System.Windows.Forms.ProgressBar();
+            this.progressLeft = new System.Windows.Forms.ProgressBar();
+            this.btnVUMeter = new System.Windows.Forms.CheckBox();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.baudBox)).BeginInit();
             this.panelFlash.SuspendLayout();
@@ -80,6 +85,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.ReplayDelay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).BeginInit();
             this.panelCpuRam.SuspendLayout();
+            this.panelVUMeter.SuspendLayout();
             this.SuspendLayout();
             // 
             // radioMainMode
@@ -90,7 +96,7 @@
             this.radioMainMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.radioMainMode.Location = new System.Drawing.Point(1, 3);
             this.radioMainMode.Name = "radioMainMode";
-            this.radioMainMode.Size = new System.Drawing.Size(100, 50);
+            this.radioMainMode.Size = new System.Drawing.Size(100, 33);
             this.radioMainMode.TabIndex = 71;
             this.radioMainMode.TabStop = true;
             this.radioMainMode.Text = "Main mode";
@@ -103,9 +109,9 @@
             this.radioFlashingMessage.Appearance = System.Windows.Forms.Appearance.Button;
             this.radioFlashingMessage.FlatAppearance.BorderSize = 3;
             this.radioFlashingMessage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioFlashingMessage.Location = new System.Drawing.Point(1, 58);
+            this.radioFlashingMessage.Location = new System.Drawing.Point(1, 42);
             this.radioFlashingMessage.Name = "radioFlashingMessage";
-            this.radioFlashingMessage.Size = new System.Drawing.Size(100, 50);
+            this.radioFlashingMessage.Size = new System.Drawing.Size(100, 33);
             this.radioFlashingMessage.TabIndex = 72;
             this.radioFlashingMessage.Text = "Flashing message";
             this.radioFlashingMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -117,9 +123,9 @@
             this.radioScrollingMessage.Appearance = System.Windows.Forms.Appearance.Button;
             this.radioScrollingMessage.FlatAppearance.BorderSize = 3;
             this.radioScrollingMessage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioScrollingMessage.Location = new System.Drawing.Point(1, 113);
+            this.radioScrollingMessage.Location = new System.Drawing.Point(1, 81);
             this.radioScrollingMessage.Name = "radioScrollingMessage";
-            this.radioScrollingMessage.Size = new System.Drawing.Size(100, 50);
+            this.radioScrollingMessage.Size = new System.Drawing.Size(100, 33);
             this.radioScrollingMessage.TabIndex = 73;
             this.radioScrollingMessage.Text = "Scrolling message";
             this.radioScrollingMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -310,9 +316,9 @@
             // 
             // panelFlash
             // 
+            this.panelFlash.Controls.Add(this.trackBarFlash);
             this.panelFlash.Controls.Add(this.label4);
             this.panelFlash.Controls.Add(this.label1);
-            this.panelFlash.Controls.Add(this.trackBarFlash);
             this.panelFlash.Controls.Add(this.txtFlash2);
             this.panelFlash.Controls.Add(this.txtFlash1);
             this.panelFlash.Controls.Add(this.btnFlash);
@@ -321,6 +327,17 @@
             this.panelFlash.Size = new System.Drawing.Size(500, 212);
             this.panelFlash.TabIndex = 97;
             this.panelFlash.Visible = false;
+            // 
+            // trackBarFlash
+            // 
+            this.trackBarFlash.LargeChange = 2;
+            this.trackBarFlash.Location = new System.Drawing.Point(148, 109);
+            this.trackBarFlash.Minimum = 1;
+            this.trackBarFlash.Name = "trackBarFlash";
+            this.trackBarFlash.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.trackBarFlash.Size = new System.Drawing.Size(212, 45);
+            this.trackBarFlash.TabIndex = 92;
+            this.trackBarFlash.Value = 10;
             // 
             // label4
             // 
@@ -339,17 +356,6 @@
             this.label1.Size = new System.Drawing.Size(30, 13);
             this.label1.TabIndex = 93;
             this.label1.Text = "Slow";
-            // 
-            // trackBarFlash
-            // 
-            this.trackBarFlash.LargeChange = 2;
-            this.trackBarFlash.Location = new System.Drawing.Point(148, 109);
-            this.trackBarFlash.Minimum = 1;
-            this.trackBarFlash.Name = "trackBarFlash";
-            this.trackBarFlash.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.trackBarFlash.Size = new System.Drawing.Size(212, 45);
-            this.trackBarFlash.TabIndex = 92;
-            this.trackBarFlash.Value = 10;
             // 
             // txtFlash2
             // 
@@ -532,9 +538,9 @@
             this.radioCpuRam.Appearance = System.Windows.Forms.Appearance.Button;
             this.radioCpuRam.FlatAppearance.BorderSize = 3;
             this.radioCpuRam.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioCpuRam.Location = new System.Drawing.Point(1, 168);
+            this.radioCpuRam.Location = new System.Drawing.Point(1, 120);
             this.radioCpuRam.Name = "radioCpuRam";
-            this.radioCpuRam.Size = new System.Drawing.Size(100, 50);
+            this.radioCpuRam.Size = new System.Drawing.Size(100, 33);
             this.radioCpuRam.TabIndex = 75;
             this.radioCpuRam.Text = "CPU/RAM";
             this.radioCpuRam.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -613,19 +619,74 @@
             this.btnCpuRam.UseVisualStyleBackColor = true;
             this.btnCpuRam.CheckedChanged += new System.EventHandler(this.btnCpuRam_CheckedChanged);
             // 
+            // radioVUMeter
+            // 
+            this.radioVUMeter.Appearance = System.Windows.Forms.Appearance.Button;
+            this.radioVUMeter.FlatAppearance.BorderSize = 3;
+            this.radioVUMeter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.radioVUMeter.Location = new System.Drawing.Point(1, 159);
+            this.radioVUMeter.Name = "radioVUMeter";
+            this.radioVUMeter.Size = new System.Drawing.Size(100, 33);
+            this.radioVUMeter.TabIndex = 101;
+            this.radioVUMeter.Text = "VU meter";
+            this.radioVUMeter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.radioVUMeter.UseVisualStyleBackColor = true;
+            this.radioVUMeter.CheckedChanged += new System.EventHandler(this.radioVUMeter_CheckedChanged);
+            // 
+            // panelVUMeter
+            // 
+            this.panelVUMeter.Controls.Add(this.progressRight);
+            this.panelVUMeter.Controls.Add(this.progressLeft);
+            this.panelVUMeter.Controls.Add(this.btnVUMeter);
+            this.panelVUMeter.Location = new System.Drawing.Point(103, 3);
+            this.panelVUMeter.Name = "panelVUMeter";
+            this.panelVUMeter.Size = new System.Drawing.Size(500, 212);
+            this.panelVUMeter.TabIndex = 101;
+            this.panelVUMeter.Visible = false;
+            // 
+            // progressRight
+            // 
+            this.progressRight.Location = new System.Drawing.Point(113, 69);
+            this.progressRight.MarqueeAnimationSpeed = 10000;
+            this.progressRight.Name = "progressRight";
+            this.progressRight.Size = new System.Drawing.Size(274, 23);
+            this.progressRight.TabIndex = 4;
+            // 
+            // progressLeft
+            // 
+            this.progressLeft.Location = new System.Drawing.Point(113, 20);
+            this.progressLeft.MarqueeAnimationSpeed = 10000;
+            this.progressLeft.Name = "progressLeft";
+            this.progressLeft.Size = new System.Drawing.Size(274, 23);
+            this.progressLeft.TabIndex = 3;
+            // 
+            // btnVUMeter
+            // 
+            this.btnVUMeter.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnVUMeter.Location = new System.Drawing.Point(212, 179);
+            this.btnVUMeter.Name = "btnVUMeter";
+            this.btnVUMeter.Size = new System.Drawing.Size(76, 24);
+            this.btnVUMeter.TabIndex = 2;
+            this.btnVUMeter.Text = "Start";
+            this.btnVUMeter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnVUMeter.UseVisualStyleBackColor = true;
+            this.btnVUMeter.CheckedChanged += new System.EventHandler(this.btnVUMeter_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 218);
+            this.Controls.Add(this.radioVUMeter);
             this.Controls.Add(this.radioCpuRam);
             this.Controls.Add(this.radioScrollingMessage);
             this.Controls.Add(this.radioFlashingMessage);
             this.Controls.Add(this.radioMainMode);
-            this.Controls.Add(this.panelScroll);
+            this.Controls.Add(this.panelVUMeter);
             this.Controls.Add(this.panelCpuRam);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelFlash);
+            this.Controls.Add(this.panelScroll);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -643,6 +704,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.ReplayDelay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).EndInit();
             this.panelCpuRam.ResumeLayout(false);
+            this.panelVUMeter.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -692,6 +754,11 @@
         private System.Windows.Forms.Label labelCPU;
         public System.Windows.Forms.CheckBox btnCpuRam;
         public System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.RadioButton radioVUMeter;
+        private System.Windows.Forms.Panel panelVUMeter;
+        public System.Windows.Forms.CheckBox btnVUMeter;
+        private System.Windows.Forms.ProgressBar progressRight;
+        private System.Windows.Forms.ProgressBar progressLeft;
     }
 }
 
