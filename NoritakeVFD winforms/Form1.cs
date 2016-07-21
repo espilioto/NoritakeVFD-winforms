@@ -116,7 +116,7 @@ namespace NoritakeVFD_winforms
 
         private void cboxCharset_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Stuff.Serial.uart.Write(Stuff.Display.charsets[cboxCharset.SelectedIndex], 0, 3);
+            //Stuff.Serial.uart.Write(Stuff.Display.charsets[cboxCharset.SelectedIndex], 0, 3);
         }
 
         #region radio buttons and panels
@@ -284,8 +284,9 @@ namespace NoritakeVFD_winforms
         private void button4_Click(object sender, EventArgs e) //test stuff
         {
             //byte[] com = new byte[] { 0xDB, 0xDC, 0xDD, 0xDE, 0xDF };
-            //Stuff.Serial.uart.Write(com, 0, com.Length);
-            Stuff.Display.Notify();
+            byte[] com = new byte[] { 0xff };
+            Stuff.Serial.uart.Write(com, 0, com.Length);
+            //Stuff.Display.Notify();
         }
 
     }

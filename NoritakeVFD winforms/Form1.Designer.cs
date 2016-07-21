@@ -74,6 +74,8 @@
             this.btnCpuRam = new System.Windows.Forms.CheckBox();
             this.radioVUMeter = new System.Windows.Forms.RadioButton();
             this.panelVUMeter = new System.Windows.Forms.Panel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.progressRight = new System.Windows.Forms.ProgressBar();
             this.progressLeft = new System.Windows.Forms.ProgressBar();
             this.btnVUMeter = new System.Windows.Forms.CheckBox();
@@ -531,6 +533,7 @@
             // 
             // timer
             // 
+            this.timer.Interval = 50;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // radioCpuRam
@@ -635,6 +638,8 @@
             // 
             // panelVUMeter
             // 
+            this.panelVUMeter.Controls.Add(this.label11);
+            this.panelVUMeter.Controls.Add(this.label10);
             this.panelVUMeter.Controls.Add(this.progressRight);
             this.panelVUMeter.Controls.Add(this.progressLeft);
             this.panelVUMeter.Controls.Add(this.btnVUMeter);
@@ -644,20 +649,40 @@
             this.panelVUMeter.TabIndex = 101;
             this.panelVUMeter.Visible = false;
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(166, 127);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(41, 13);
+            this.label11.TabIndex = 6;
+            this.label11.Text = "label11";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(110, 127);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(41, 13);
+            this.label10.TabIndex = 5;
+            this.label10.Text = "label10";
+            // 
             // progressRight
             // 
             this.progressRight.Location = new System.Drawing.Point(113, 69);
-            this.progressRight.MarqueeAnimationSpeed = 10000;
+            this.progressRight.MarqueeAnimationSpeed = 5;
             this.progressRight.Name = "progressRight";
             this.progressRight.Size = new System.Drawing.Size(274, 23);
+            this.progressRight.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressRight.TabIndex = 4;
             // 
             // progressLeft
             // 
             this.progressLeft.Location = new System.Drawing.Point(113, 20);
-            this.progressLeft.MarqueeAnimationSpeed = 10000;
+            this.progressLeft.MarqueeAnimationSpeed = 5;
             this.progressLeft.Name = "progressLeft";
             this.progressLeft.Size = new System.Drawing.Size(274, 23);
+            this.progressLeft.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressLeft.TabIndex = 3;
             // 
             // btnVUMeter
@@ -705,6 +730,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScroll)).EndInit();
             this.panelCpuRam.ResumeLayout(false);
             this.panelVUMeter.ResumeLayout(false);
+            this.panelVUMeter.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -759,6 +785,8 @@
         public System.Windows.Forms.CheckBox btnVUMeter;
         private System.Windows.Forms.ProgressBar progressRight;
         private System.Windows.Forms.ProgressBar progressLeft;
+        public System.Windows.Forms.Label label10;
+        public System.Windows.Forms.Label label11;
     }
 }
 
